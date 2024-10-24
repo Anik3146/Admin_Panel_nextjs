@@ -109,8 +109,183 @@ const CommonTable = () => {
         onClose={() => setIsAddOpen(false)}
         title="Add Package"
       >
-        {/* Add form goes here */}
-        <p>Add new package details</p>
+        <form className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800">
+          <div>
+            <label
+              htmlFor="packageName"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Package Name:
+            </label>
+            <input
+              type="text"
+              id="packageName"
+              name="packageName"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="description"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Description:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            ></textarea>
+          </div>
+
+          <div>
+            <label
+              htmlFor="weight"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Weight (kg):
+            </label>
+            <input
+              type="number"
+              id="weight"
+              name="weight"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="dimensions"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Dimensions (L x W x H):
+            </label>
+            <input
+              type="text"
+              id="dimensions"
+              name="dimensions"
+              placeholder="e.g., 10x5x3"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="trackingNumber"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Tracking Number:
+            </label>
+            <input
+              type="text"
+              id="trackingNumber"
+              name="trackingNumber"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
+          >
+            Submit
+          </button>
+        </form>
+
+        <form className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800">
+          <div>
+            <label
+              htmlFor="packageName"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Package Name:
+            </label>
+            <input
+              type="text"
+              id="packageName"
+              name="packageName"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="description"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Description:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            ></textarea>
+          </div>
+
+          <div>
+            <label
+              htmlFor="weight"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Weight (kg):
+            </label>
+            <input
+              type="number"
+              id="weight"
+              name="weight"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="dimensions"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Dimensions (L x W x H):
+            </label>
+            <input
+              type="text"
+              id="dimensions"
+              name="dimensions"
+              placeholder="e.g., 10x5x3"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="trackingNumber"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Tracking Number:
+            </label>
+            <input
+              type="text"
+              id="trackingNumber"
+              name="trackingNumber"
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
+          >
+            Submit
+          </button>
+        </form>
       </Modal>
       {/* Modal for Editing */}
       <Modal
@@ -203,7 +378,7 @@ const CommonTable = () => {
             type="submit"
             className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
           >
-            Submit
+            Save
           </button>
         </form>
       </Modal>
@@ -294,13 +469,6 @@ const CommonTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300"
             />
           </div>
-
-          <button
-            type="submit"
-            className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
-          >
-            Submit
-          </button>
         </form>
       </Modal>
       {/* Modal for delete */}
@@ -340,7 +508,6 @@ const CommonTable = () => {
             placeholder="Search..."
             className="rounded border border-gray-300 p-2"
           />
-          <button className="rounded bg-gray-200 px-4 py-2">Search</button>
           <button className="rounded bg-gray-200 px-4 py-2">
             Sort by Date
           </button>
@@ -425,7 +592,10 @@ const CommonTable = () => {
                   className={`border-[#eee] px-4 py-4 dark:border-dark-3 xl:pr-7.5 ${index === packageData.length - 1 ? "border-b-0" : "border-b"}`}
                 >
                   <div className="flex items-center justify-end space-x-3.5">
-                    <button className="hover:text-primary">
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => handleEdit("Edit")}
+                    >
                       <svg
                         className="fill-current"
                         width="20"
