@@ -207,7 +207,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Products",
-        route: "#",
+        route: "/products",
       },
       {
         icon: (
