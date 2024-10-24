@@ -228,7 +228,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Categories",
-        route: "#",
+        route: "/categories",
       },
       {
         icon: (
@@ -249,7 +249,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Brands",
-        route: "#",
+        route: "/brands",
       },
       {
         icon: (
@@ -270,7 +270,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Orders",
-        route: "#",
+        route: "/orders",
       },
       {
         icon: (
@@ -291,7 +291,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Coupons",
-        route: "#",
+        route: "/coupons",
       },
       {
         icon: (
@@ -312,7 +312,7 @@ const menuGroups = [
           </svg>
         ),
         label: "User Orders",
-        route: "#",
+        route: "user-orders",
       },
       {
         icon: (
@@ -333,7 +333,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Reviews",
-        route: "#",
+        route: "/reviews",
       },
       {
         icon: (
@@ -354,7 +354,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Cloudinary",
-        route: "#",
+        route: "/cloudinary",
       },
       {
         icon: (
@@ -375,10 +375,10 @@ const menuGroups = [
           </svg>
         ),
         label: "Settings",
-        route: "/",
+        route: "#",
         children: [
-          { label: "Admin", route: "/auth/signin" },
-          { label: "Users", route: "/" },
+          { label: "Admins", route: "/admins" },
+          { label: "Users", route: "/users" },
         ],
       },
     ],
