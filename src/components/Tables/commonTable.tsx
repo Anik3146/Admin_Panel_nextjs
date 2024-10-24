@@ -73,6 +73,19 @@ const CommonTable = () => {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<any>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [sortBy, setSortBy] = useState("");
+  const [isCustomDate, setIsCustomDate] = useState(false);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  const handleSortChange = (e: any) => {
+    setSortBy(e.target.value);
+    if (e.target.value === "custom") {
+      setIsCustomDate(true);
+    } else {
+      setIsCustomDate(false);
+    }
+  };
 
   const handleEdit = (packageItem: any) => {
     setSelectedPackage(packageItem);
@@ -498,20 +511,42 @@ const CommonTable = () => {
       <div className="mb-4 flex items-center justify-between">
         <button
           onClick={() => setIsAddOpen(true)}
-          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          className="mr-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         >
           Add new item
         </button>
-        <div className="flex space-x-2">
+        <div className="ml-auto flex items-center space-x-2 text-gray-700">
           <input
             type="text"
-            placeholder="Search..."
-            className="rounded border border-gray-300 p-2"
+            placeholder="🔍 Search..."
+            className="rounded border border-gray-300 bg-gray-100 p-2"
           />
-          <button className="rounded bg-gray-200 px-4 py-2">
-            Sort by Date
-          </button>
-          <button className="rounded bg-gray-200 px-4 py-2">Custom Date</button>
+          <select
+            value={sortBy}
+            onChange={handleSortChange}
+            className="rounded border border-gray-300 bg-gray-100 p-2"
+          >
+            <option value="">Sort by Date</option>
+            <option value="ascending">Ascending</option>
+            <option value="descending">Descending</option>
+            <option value="custom">Custom</option>
+          </select>
+          {isCustomDate && (
+            <div className="flex space-x-2">
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className="rounded border border-gray-300 bg-gray-100 p-2"
+              />
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="rounded border border-gray-300 bg-gray-100 p-2"
+              />
+            </div>
+          )}
         </div>
       </div>
 
