@@ -1,71 +1,10 @@
 import { Package } from "@/types/package";
 import Image from "next/image";
 import { Product } from "@/types/product";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../components/modals/Modal";
 import FormElements from "../FormElements";
-
-const productData: Product[] = [
-  {
-    image: "/images/product/product-01.png",
-    name: "Apple Watch Series 7",
-    category: "Electronics",
-    price: 296,
-    sold: 22,
-    profit: 45,
-  },
-  {
-    image: "/images/product/product-02.png",
-    name: "Macbook Pro M1",
-    category: "Electronics",
-    price: 546,
-    sold: 12,
-    profit: 125,
-  },
-  {
-    image: "/images/product/product-03.png",
-    name: "Dell Inspiron 15",
-    category: "Electronics",
-    price: 443,
-    sold: 64,
-    profit: 247,
-  },
-  {
-    image: "/images/product/product-04.png",
-    name: "HP Probook 450",
-    category: "Electronics",
-    price: 499,
-    sold: 72,
-    profit: 103,
-  },
-];
-
-const packageData: Package[] = [
-  {
-    name: "Free package",
-    price: 0.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Paid",
-  },
-  {
-    name: "Standard Package",
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Paid",
-  },
-  {
-    name: "Business Package",
-    price: 99.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Unpaid",
-  },
-  {
-    name: "Standard Package",
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Pending",
-  },
-];
+import { baseUrl } from "@/utils/constant";
 
 const CommonTable = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -77,6 +16,7 @@ const CommonTable = () => {
   const [isCustomDate, setIsCustomDate] = useState(false);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [data, setData] =useState<any[]>();
 
   const handleSortChange = (e: any) => {
     setSortBy(e.target.value);
@@ -113,6 +53,28 @@ const CommonTable = () => {
     setIsDeleteOpen(false);
     setSelectedPackage(null); // Clear the selection after deletion
   };
+
+  useEffect(() => {
+    // Fetch data from API
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/api/product/all`); // Replace with your API endpoint
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setData(data.data); // Update state with fetched data
+      } catch (error) {
+        console.error('Error fetching packages:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(()=>{
+    console.log(data);
+  },[data])
 
   return (
     <div className="rounded-[10px] border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card sm:p-7.5">
@@ -312,7 +274,7 @@ const CommonTable = () => {
               htmlFor="packageName"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Package Name:
+              Title
             </label>
             <input
               type="text"
@@ -533,17 +495,19 @@ const CommonTable = () => {
           </select>
           {isCustomDate && (
             <div className="flex space-x-2">
+              <div className="text-black dark:text-white mt-2">From</div>
               <input
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="rounded border border-gray-300 bg-gray-100 p-2"
+                className="rounded border border-gray-300 bg-gray-100 p-2 mx-1"
               />
+              <div className="text-black dark:text-white mt-2">To</div>
               <input
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="rounded border border-gray-300 bg-gray-100 p-2"
+                className="rounded border border-gray-300 bg-gray-100 p-2 mx-1"
               />
             </div>
           )}
@@ -555,63 +519,88 @@ const CommonTable = () => {
           <thead>
             <tr className="bg-[#F7F9FC] text-left dark:bg-dark-2">
               <th className="min-w-[220px] px-4 py-4 font-medium text-dark dark:text-white xl:pl-7.5">
-                Name
+                Title
               </th>
               <th className="min-w-[220px] px-4 py-4 font-medium text-dark dark:text-white xl:pl-7.5">
-                Package
+                Brand
               </th>
               <th className="min-w-[150px] px-4 py-4 font-medium text-dark dark:text-white">
-                Invoice date
+                Category
               </th>
               <th className="min-w-[120px] px-4 py-4 font-medium text-dark dark:text-white">
-                Status
+                Price
               </th>
               <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
-                Actions
+                Type
+              </th>
+              <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
+                Quantity
+              </th>
+              <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
+                Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {packageData.map((packageItem, index) => (
+            {data && data.map((packageItem, index) => (
               <tr key={index}>
                 <td
-                  className={`h-[60px] border-[#eee] px-4 py-4 dark:border-dark-3 xl:pl-7.5 ${index === packageData.length - 1 ? "border-b-0" : "border-b"}`}
+                  className={`h-[60px] border-[#eee] px-4 py-4 dark:border-dark-3 xl:pl-7.5 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                     <div className="h-12.5 w-15 rounded-md">
                       <Image
-                        src={productData[2].image}
+                        src={packageItem?.imageURLs[0].img}
                         width={60}
                         height={50}
                         alt="Product"
                       />
                     </div>
-                    <p className="text-body-sm font-medium text-dark dark:text-dark-6">
-                      {productData[2].name}
+                    <p className="text-body-lg font-medium text-dark dark:text-dark-6">
+                    {packageItem.title}
                     </p>
                   </div>
                 </td>
                 <td
-                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 xl:pl-7.5 ${index === packageData.length - 1 ? "border-b-0" : "border-b"}`}
-                >
-                  <h5 className="text-dark dark:text-white">
-                    {packageItem.name}
-                  </h5>
-                  <p className="mt-[3px] text-body-sm font-medium">
-                    ${packageItem.price}
-                  </p>
-                </td>
-                <td
-                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === packageData.length - 1 ? "border-b-0" : "border-b"}`}
+                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
                 >
                   <p className="text-dark dark:text-white">
-                    {packageItem.invoiceDate}
+                  {packageItem?.brand.name}
                   </p>
                 </td>
                 <td
-                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === packageData.length - 1 ? "border-b-0" : "border-b"}`}
+                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
                 >
-                  <p
+                  <p className="text-dark dark:text-white">
+                  {packageItem?.category.name}
+                  </p>
+                </td>
+                <td
+                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                >
+                  <p className="text-dark dark:text-white">
+                  {packageItem.price}
+                  </p>
+                </td>
+                <td
+                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                >
+                  <p className="text-dark dark:text-white">
+                  {packageItem.productType}
+                  </p>
+                </td>
+                <td
+                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                >
+                  <p className="text-dark dark:text-white">
+                  {packageItem.quantity}
+                  </p>
+                </td>
+                {/*
+                <td
+                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                >
+                    <p
                     className={`inline-flex rounded-full px-3.5 py-1 text-body-sm font-medium ${
                       packageItem.status === "Paid"
                         ? "bg-[#219653]/[0.08] text-[#219653]"
@@ -622,9 +611,11 @@ const CommonTable = () => {
                   >
                     {packageItem.status}
                   </p>
+                 
                 </td>
+                */}
                 <td
-                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 xl:pr-7.5 ${index === packageData.length - 1 ? "border-b-0" : "border-b"}`}
+                  className={`border-[#eee] px-4 py-4 dark:border-dark-3 xl:pr-7.5 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
                 >
                   <div className="flex items-center justify-end space-x-3.5">
                     <button
