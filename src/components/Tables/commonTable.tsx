@@ -123,7 +123,8 @@ const CommonTable = () => {
       const result = await response.json();
       // Handle success (e.g., notify the user, close the modal, etc.)
       console.log("Update successful:", result);
-      setIsViewOpen(false); // Close the modal or take another action
+      setIsEditOpen(false); // Close the modal or take another action
+      fetchData();
     } catch (error) {
       // Handle error (e.g., show an error message)
       console.error("Error updating the data:", error);
@@ -168,6 +169,7 @@ const CommonTable = () => {
       console.log("Product added:", data);
 
       setIsAddOpen(false); // Close the add dialog
+      fetchData();
     } catch (error) {
       console.error("Error adding product:", error);
       // Handle error state (e.g., show a notification)
@@ -198,6 +200,7 @@ const CommonTable = () => {
       const result = await response.json();
       // Handle success (e.g., notify the user, update the UI, etc.)
       console.log("Delete successful:", result);
+      fetchData();
       // Optionally refresh the data or update state to remove the deleted item
     } catch (error) {
       // Handle error (e.g., show an error message)
