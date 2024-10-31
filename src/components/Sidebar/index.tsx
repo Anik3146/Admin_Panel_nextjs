@@ -53,7 +53,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "Dashboard",
         route: "/",
         /*
@@ -104,7 +104,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["user"],
+        roles: ["user", "Admin"],
         label: "Calendar",
         route: "/calendar",
       },
@@ -134,7 +134,7 @@ const menuGroups: MenuGroup[] = [
         ),
         label: "Profile",
         route: "/profile",
-        roles: ["admin"],
+        roles: ["Admin"],
       },
       {
         icon: (
@@ -155,13 +155,13 @@ const menuGroups: MenuGroup[] = [
           </svg>
         ),
         label: "Forms",
-        roles: ["admin"],
+        roles: ["Admin"],
         route: "#",
         children: [
           {
             label: "Form Elements",
             route: "/forms/form-elements",
-            roles: ["admin"],
+            roles: ["Admin"],
           },
           { label: "Form Layout", route: "/forms/form-layout" },
         ],
@@ -186,7 +186,7 @@ const menuGroups: MenuGroup[] = [
         ),
         label: "Tables",
         route: "#",
-        roles: ["admin"],
+        roles: ["Admin"],
         children: [{ label: "Tables", route: "/tables" }],
       },
       {
@@ -209,7 +209,7 @@ const menuGroups: MenuGroup[] = [
         ),
         label: "Pages",
         route: "#",
-        roles: ["admin"],
+        roles: ["Admin"],
         children: [{ label: "Settings", route: "/pages/settings" }],
       },
       {
@@ -230,7 +230,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "Products",
         route: "/products",
       },
@@ -252,7 +252,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "Categories",
         route: "/categories",
       },
@@ -274,7 +274,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "Brands",
         route: "/brands",
       },
@@ -296,7 +296,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "Orders",
         route: "/orders",
       },
@@ -318,7 +318,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "Coupons",
         route: "/coupons",
       },
@@ -340,7 +340,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "User Orders",
         route: "user-orders",
       },
@@ -362,7 +362,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "Reviews",
         route: "/reviews",
       },
@@ -384,7 +384,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["admin"],
+        roles: ["Admin"],
         label: "Cloudinary",
         route: "/cloudinary",
       },
@@ -408,9 +408,9 @@ const menuGroups: MenuGroup[] = [
         ),
         label: "Settings",
         route: "#",
-        roles: ["admin"],
+        roles: ["Admin"],
         children: [
-          { label: "Admins", route: "/admins" },
+          { label: "Admins", route: "/Admins" },
           { label: "Users", route: "/users" },
         ],
       },
@@ -442,7 +442,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["user"],
+        roles: ["user", "Admin"],
         label: "Charts",
         route: "#",
         children: [{ label: "Basic Chart", route: "/charts/basic-chart" }],
@@ -593,7 +593,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       (menuItem) =>
                         !menuItem.roles || // No roles defined, show item
                         !menuItem.roles.length || // Empty roles array, show item
-                        menuItem.roles.some((role) => role == user), // Check if user and roles are defined
+                        menuItem.roles.some((role) => role == user.role), // Check if user and roles are defined
                     )
                     .map((menuItem, menuIndex) => (
                       <SidebarItem
