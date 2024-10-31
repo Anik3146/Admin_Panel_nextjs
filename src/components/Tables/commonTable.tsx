@@ -10,14 +10,16 @@ const CommonTable = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<any>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [sortBy, setSortBy] = useState("");
   const [isCustomDate, setIsCustomDate] = useState(false);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [data, setData] = useState<any>();
+  const [data, setData] = useState<any>([]);
   const [formDataId, setFormDataId] = useState<any>();
+  const [filteredData, setFilteredData] = useState(data);
+  const [searchTerm, setSearchTerm] = useState("");
+
   // Define initialFormData first
   const initialFormData = {
     sku: "",
@@ -214,6 +216,46 @@ const CommonTable = () => {
   useEffect(() => {
     console.log(formDataId);
   }, [formDataId]);
+
+  useEffect(() => {
+    let filtered = [...data];
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter((item) =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+    }
+
+    // Date filter
+    if (fromDate) {
+      filtered = filtered.filter(
+        (item) => new Date(item.offerDate.startDate) >= new Date(fromDate),
+      );
+    }
+    if (toDate) {
+      filtered = filtered.filter(
+        (item) => new Date(item.offerDate.endDate) <= new Date(toDate),
+      );
+    }
+
+    // Sort
+    if (sortBy === "ascending") {
+      filtered.sort((a, b) => {
+        const startDateA = new Date(a.offerDate.startDate || 0); // Use 0 for invalid dates
+        const startDateB = new Date(b.offerDate.startDate || 0); // Use 0 for invalid dates
+        return startDateA.getTime() - startDateB.getTime();
+      });
+    } else if (sortBy === "descending") {
+      filtered.sort((a, b) => {
+        const startDateA = new Date(a.offerDate.startDate || 0); // Use 0 for invalid dates
+        const startDateB = new Date(b.offerDate.startDate || 0); // Use 0 for invalid dates
+        return startDateB.getTime() - startDateA.getTime();
+      });
+    }
+
+    setFilteredData(filtered);
+  }, [data, searchTerm, sortBy, fromDate, toDate]);
 
   return (
     <div className="rounded-[10px] border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card sm:p-7.5">
@@ -873,6 +915,8 @@ const CommonTable = () => {
           <input
             type="text"
             placeholder="🔍 Search..."
+            value={searchTerm} // Add state for search term
+            onChange={(e) => setSearchTerm(e.target.value)} // Update state on change
             className="rounded border border-gray-300 bg-gray-100 p-2"
           />
           <select
@@ -934,8 +978,8 @@ const CommonTable = () => {
             </tr>
           </thead>
           <tbody>
-            {data &&
-              data.map((packageItem: any, index: any) => (
+            {filteredData &&
+              filteredData.map((packageItem: any, index: any) => (
                 <tr key={index}>
                   <td
                     className={`h-[60px] border-[#eee] px-4 py-4 dark:border-dark-3 xl:pl-7.5 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
