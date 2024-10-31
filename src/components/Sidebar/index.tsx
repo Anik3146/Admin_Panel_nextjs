@@ -7,13 +7,27 @@ import Image from "next/image";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { useAuth } from "@/app/context/useAuth";
 
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
 }
 
-const menuGroups = [
+interface MenuItem {
+  icon?: React.ReactNode; // Make icon optional
+  label?: string;
+  route?: string;
+  roles?: string[];
+  children?: MenuItem[]; // Children can also be optional
+}
+
+interface MenuGroup {
+  name: string;
+  menuItems: MenuItem[];
+}
+
+const menuGroups: MenuGroup[] = [
   {
     name: "MAIN MENU",
     menuItems: [
@@ -39,6 +53,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "Dashboard",
         route: "/",
         /*
@@ -89,6 +104,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["user"],
         label: "Calendar",
         route: "/calendar",
       },
@@ -118,6 +134,7 @@ const menuGroups = [
         ),
         label: "Profile",
         route: "/profile",
+        roles: ["admin"],
       },
       {
         icon: (
@@ -138,9 +155,14 @@ const menuGroups = [
           </svg>
         ),
         label: "Forms",
+        roles: ["admin"],
         route: "#",
         children: [
-          { label: "Form Elements", route: "/forms/form-elements" },
+          {
+            label: "Form Elements",
+            route: "/forms/form-elements",
+            roles: ["admin"],
+          },
           { label: "Form Layout", route: "/forms/form-layout" },
         ],
       },
@@ -164,6 +186,7 @@ const menuGroups = [
         ),
         label: "Tables",
         route: "#",
+        roles: ["admin"],
         children: [{ label: "Tables", route: "/tables" }],
       },
       {
@@ -186,6 +209,7 @@ const menuGroups = [
         ),
         label: "Pages",
         route: "#",
+        roles: ["admin"],
         children: [{ label: "Settings", route: "/pages/settings" }],
       },
       {
@@ -206,6 +230,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "Products",
         route: "/products",
       },
@@ -227,6 +252,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "Categories",
         route: "/categories",
       },
@@ -248,6 +274,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "Brands",
         route: "/brands",
       },
@@ -269,6 +296,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "Orders",
         route: "/orders",
       },
@@ -290,6 +318,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "Coupons",
         route: "/coupons",
       },
@@ -311,6 +340,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "User Orders",
         route: "user-orders",
       },
@@ -332,6 +362,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "Reviews",
         route: "/reviews",
       },
@@ -353,6 +384,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["admin"],
         label: "Cloudinary",
         route: "/cloudinary",
       },
@@ -376,6 +408,7 @@ const menuGroups = [
         ),
         label: "Settings",
         route: "#",
+        roles: ["admin"],
         children: [
           { label: "Admins", route: "/admins" },
           { label: "Users", route: "/users" },
@@ -409,6 +442,7 @@ const menuGroups = [
             />
           </svg>
         ),
+        roles: ["user"],
         label: "Charts",
         route: "#",
         children: [{ label: "Basic Chart", route: "/charts/basic-chart" }],
@@ -486,8 +520,10 @@ const menuGroups = [
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
-
+  const { user } = useAuth();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+
+  console.log(menuGroups);
 
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
@@ -545,24 +581,40 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
           {/* <!-- Sidebar Menu --> */}
           <nav className="mt-1 px-4 lg:px-6">
-            {menuGroups.map((group, groupIndex) => (
-              <div key={groupIndex}>
-                <h3 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
-                  {group.name}
-                </h3>
+            {menuGroups
+              .filter((group) =>
+                group.menuItems.some(
+                  (menuItem) =>
+                    !menuItem.roles || // No roles defined, show item
+                    !menuItem.roles.length || // Empty roles array, show item
+                    (user && menuItem.roles.some((role) => user)), // Check if user and roles are defined
+                ),
+              )
+              .map((group, groupIndex) => (
+                <div key={groupIndex}>
+                  <h3 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
+                    {group.name}
+                  </h3>
 
-                <ul className="mb-6 flex flex-col gap-2">
-                  {group.menuItems.map((menuItem, menuIndex) => (
-                    <SidebarItem
-                      key={menuIndex}
-                      item={menuItem}
-                      pageName={pageName}
-                      setPageName={setPageName}
-                    />
-                  ))}
-                </ul>
-              </div>
-            ))}
+                  <ul className="mb-6 flex flex-col gap-2">
+                    {group.menuItems
+                      .filter(
+                        (menuItem) =>
+                          !menuItem.roles || // No roles defined, show item
+                          !menuItem.roles.length || // Empty roles array, show item
+                          (user && menuItem.roles.some((role) => user)), // Check if user and roles are defined
+                      )
+                      .map((menuItem, menuIndex) => (
+                        <SidebarItem
+                          key={menuIndex}
+                          item={menuItem}
+                          pageName={pageName}
+                          setPageName={setPageName}
+                        />
+                      ))}
+                  </ul>
+                </div>
+              ))}
           </nav>
           {/* <!-- Sidebar Menu --> */}
         </div>
