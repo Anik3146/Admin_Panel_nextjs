@@ -581,40 +581,31 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
           {/* <!-- Sidebar Menu --> */}
           <nav className="mt-1 px-4 lg:px-6">
-            {menuGroups
-              .filter((group) =>
-                group.menuItems.some(
-                  (menuItem) =>
-                    !menuItem.roles || // No roles defined, show item
-                    !menuItem.roles.length || // Empty roles array, show item
-                    (user && menuItem.roles.some((role) => user)), // Check if user and roles are defined
-                ),
-              )
-              .map((group, groupIndex) => (
-                <div key={groupIndex}>
-                  <h3 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
-                    {group.name}
-                  </h3>
+            {menuGroups.map((group, groupIndex) => (
+              <div key={groupIndex}>
+                <h3 className="mb-5 text-sm font-medium text-dark-4 dark:text-dark-6">
+                  {group.name}
+                </h3>
 
-                  <ul className="mb-6 flex flex-col gap-2">
-                    {group.menuItems
-                      .filter(
-                        (menuItem) =>
-                          !menuItem.roles || // No roles defined, show item
-                          !menuItem.roles.length || // Empty roles array, show item
-                          (user && menuItem.roles.some((role) => user)), // Check if user and roles are defined
-                      )
-                      .map((menuItem, menuIndex) => (
-                        <SidebarItem
-                          key={menuIndex}
-                          item={menuItem}
-                          pageName={pageName}
-                          setPageName={setPageName}
-                        />
-                      ))}
-                  </ul>
-                </div>
-              ))}
+                <ul className="mb-6 flex flex-col gap-2">
+                  {group.menuItems
+                    .filter(
+                      (menuItem) =>
+                        !menuItem.roles || // No roles defined, show item
+                        !menuItem.roles.length || // Empty roles array, show item
+                        menuItem.roles.some((role) => role == user), // Check if user and roles are defined
+                    )
+                    .map((menuItem, menuIndex) => (
+                      <SidebarItem
+                        key={menuIndex}
+                        item={menuItem}
+                        pageName={pageName}
+                        setPageName={setPageName}
+                      />
+                    ))}
+                </ul>
+              </div>
+            ))}
           </nav>
           {/* <!-- Sidebar Menu --> */}
         </div>
