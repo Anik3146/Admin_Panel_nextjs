@@ -593,7 +593,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       (menuItem) =>
                         !menuItem.roles || // No roles defined, show item
                         !menuItem.roles.length || // Empty roles array, show item
-                        menuItem.roles.some((role) => role == user.role), // Check if user and roles are defined
+                        menuItem.roles.some((role) => role == user?.role), // Check if user and roles are defined
                     )
                     .map((menuItem, menuIndex) => (
                       <SidebarItem

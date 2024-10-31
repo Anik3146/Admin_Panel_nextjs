@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Modal from "../../components/modals/Modal";
 import FormElements from "../FormElements";
 import { baseUrl } from "@/utils/constant";
+import { useAuth } from "@/app/context/useAuth";
 
 const CommonTable = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -19,6 +20,7 @@ const CommonTable = () => {
   const [formDataId, setFormDataId] = useState<any>();
   const [filteredData, setFilteredData] = useState(data);
   const [searchTerm, setSearchTerm] = useState("");
+  const { user } = useAuth();
 
   // Define initialFormData first
   const initialFormData = {
@@ -108,6 +110,7 @@ const CommonTable = () => {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
           },
           body: JSON.stringify(formData),
         },
@@ -151,6 +154,7 @@ const CommonTable = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
         },
         body: JSON.stringify(formData), // Directly use formData
       });
@@ -183,6 +187,7 @@ const CommonTable = () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
         },
       });
 
