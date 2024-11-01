@@ -16,20 +16,27 @@ const SignIn: React.FC = ({ isToken }: any) => {
         <div className="hidden w-full p-7.5 xl:block xl:w-1/2">
           <div className="custom-gradient-1 overflow-hidden rounded-2xl px-12.5 pt-12.5 dark:!bg-dark-2 dark:bg-none">
             <Link className="mb-10 inline-block" href="/">
-              <Image
-                className="hidden dark:block"
-                src={"/images/logo/logo.svg"}
-                alt="Logo"
-                width={176}
-                height={32}
-              />
-              <Image
-                className="dark:hidden"
-                src={"/images/logo/logo-dark.svg"}
-                alt="Logo"
-                width={176}
-                height={32}
-              />
+                  {/* Mobile Logo */}
+        <Image
+          width={50}
+          height={50}
+          src="/images/splendid_logo.png"
+          alt="Logo"
+          priority
+          className="block md:hidden" // Show on mobile, hide on desktop
+          style={{ width: "auto", height: "auto" }}
+        />
+        
+        {/* Desktop Logo */}
+        <Image
+          width={50}
+          height={50}
+          src="/images/splendid_logo.png"
+          alt="Logo"
+          priority
+          className="hidden md:block" // Hide on mobile, show on desktop
+          style={{ width: "auto", height: "auto" }}
+        />
             </Link>
             <p className="mb-3 text-xl font-medium text-dark dark:text-white">
               Sign in to your account

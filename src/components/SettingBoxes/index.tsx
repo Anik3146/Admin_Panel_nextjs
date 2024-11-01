@@ -1,8 +1,12 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import { useAuth } from "@/app/context/useAuth";
 
 const SettingBoxes = () => {
+
+  const {user} = useAuth();
+
   return (
     <>
       <div className="grid grid-cols-5 gap-8">
@@ -52,8 +56,8 @@ const SettingBoxes = () => {
                         type="text"
                         name="fullName"
                         id="fullName"
-                        placeholder="Devid Jhon"
-                        defaultValue="Devid Jhon"
+                        placeholder="Enter your name"
+                        defaultValue={user.name}
                       />
                     </div>
                   </div>
@@ -65,6 +69,7 @@ const SettingBoxes = () => {
                     >
                       Phone Number
                     </label>
+                  
                     <div className="relative">
                       <span className="absolute left-4.5 top-1/2 -translate-y-1/2">
                         <svg
@@ -89,8 +94,8 @@ const SettingBoxes = () => {
                         type="text"
                         name="phoneNumber"
                         id="phoneNumber"
-                        placeholder="+990 3343 7865"
-                        defaultValue="+990 3343 7865"
+                        placeholder="Enter your number"
+                        defaultValue={user.phoneNumber}
                       />
                     </div>
                   </div>
@@ -126,8 +131,8 @@ const SettingBoxes = () => {
                       type="email"
                       name="emailAddress"
                       id="emailAddress"
-                      placeholder="devidjond45@gmail.com"
-                      defaultValue="devidjond45@gmail.com"
+                      placeholder="Enter your email"
+                      defaultValue={user.email}
                     />
                   </div>
                 </div>
@@ -168,8 +173,8 @@ const SettingBoxes = () => {
                       type="text"
                       name="Username"
                       id="Username"
-                      placeholder="devidjhon24"
-                      defaultValue="devidjhon24"
+                      placeholder="Enter your username"
+                      defaultValue={user.name}
                     />
                   </div>
                 </div>
@@ -243,7 +248,7 @@ const SettingBoxes = () => {
                   <div className="h-14 w-14 rounded-full">
                     <>
                       <Image
-                        src="/images/user/user-03.png"
+                        src="/images/splendid_logo.png"
                         width={55}
                         height={55}
                         alt="User"
