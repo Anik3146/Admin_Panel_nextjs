@@ -1,53 +1,53 @@
-import { Package } from "@/types/package";
-import Image from "next/image";
-import { Product } from "@/types/product";
-import { useEffect, useState } from "react";
-import Modal from "../../components/modals/Modal";
-import FormElements from "../FormElements";
-import { baseUrl } from "@/utils/constant";
-import { useAuth } from "@/app/context/useAuth";
+import { Package } from '@/types/package';
+import Image from 'next/image';
+import { Product } from '@/types/product';
+import { useEffect, useState } from 'react';
+import Modal from '../modals/Modal';
+import FormElements from '../FormElements';
+import { baseUrl } from '@/utils/constant';
+import { useAuth } from '@/app/context/useAuth';
 
-const CommonTable = () => {
+const CategoriesTable = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [sortBy, setSortBy] = useState("");
+  const [sortBy, setSortBy] = useState('');
   const [isCustomDate, setIsCustomDate] = useState(false);
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [data, setData] = useState<any>([]);
   const [formDataId, setFormDataId] = useState<any>();
   const [filteredData, setFilteredData] = useState(data);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const { user } = useAuth();
 
   // Define initialFormData first
   const initialFormData = {
-    sku: "",
-    img: "",
-    title: "",
-    slug: "",
-    unit: "",
+    sku: '',
+    img: '',
+    title: '',
+    slug: '',
+    unit: '',
     imageURLs: [],
-    parent: "",
-    children: "",
+    parent: '',
+    children: '',
     price: 0.0,
     discount: 0.0,
     quantity: 0,
     brand: {
-      name: "",
-      id: "",
+      name: '',
+      id: '',
     },
     category: {
-      name: "",
-      id: "",
+      name: '',
+      id: '',
     },
-    status: "in-stock",
+    status: 'in-stock',
     reviews: [],
-    productType: "",
-    description: "",
-    videoId: "",
+    productType: '',
+    description: '',
+    videoId: '',
     additionalInformation: [],
     tags: [],
     sizes: [],
@@ -67,18 +67,18 @@ const CommonTable = () => {
     try {
       const response = await fetch(`${baseUrl}/api/product/all`); // Replace with your API endpoint
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error('Network response was not ok');
       }
       const data = await response.json();
       setData(data.data); // Update state with fetched data
     } catch (error) {
-      console.error("Error fetching packages:", error);
+      console.error('Error fetching packages:', error);
     }
   };
 
   const handleSortChange = (e: any) => {
     setSortBy(e.target.value);
-    if (e.target.value === "custom") {
+    if (e.target.value === 'custom') {
       setIsCustomDate(true);
     } else {
       setIsCustomDate(false);
@@ -95,7 +95,7 @@ const CommonTable = () => {
       setFormData(updatedPackage);
       setIsEditOpen(true);
     } else {
-      console.error("Package not found");
+      console.error('Package not found');
     }
   };
 
@@ -107,27 +107,27 @@ const CommonTable = () => {
         `${baseUrl}/api/product/edit-product/${formDataId}`,
         {
           // Ensure formData.id is the correct field
-          method: "PATCH",
+          method: 'PATCH',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${user?.token}`,
           },
           body: JSON.stringify(formData),
-        },
+        }
       );
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error('Network response was not ok');
       }
 
       const result = await response.json();
       // Handle success (e.g., notify the user, close the modal, etc.)
-      console.log("Update successful:", result);
+      console.log('Update successful:', result);
       setIsEditOpen(false); // Close the modal or take another action
       fetchData();
     } catch (error) {
       // Handle error (e.g., show an error message)
-      console.error("Error updating the data:", error);
+      console.error('Error updating the data:', error);
     }
   };
 
@@ -141,7 +141,7 @@ const CommonTable = () => {
       setFormData(updatedPackage);
       setIsViewOpen(true);
     } else {
-      console.error("Package not found");
+      console.error('Package not found');
     }
   };
 
@@ -152,9 +152,9 @@ const CommonTable = () => {
       // Make the API call with formData as the payload
       const response = await fetch(`${baseUrl}/api/product/add`, {
         // Adjust the endpoint as necessary
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${user?.token}`,
         },
         body: JSON.stringify(formData), // Directly use formData
@@ -162,16 +162,16 @@ const CommonTable = () => {
 
       // Check if the response is successful
       if (!response.ok) {
-        throw new Error("Failed to add product");
+        throw new Error('Failed to add product');
       }
 
       const data = await response.json();
-      console.log("Product added:", data);
+      console.log('Product added:', data);
 
       setIsAddOpen(false); // Close the add dialog
       fetchData();
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error('Error adding product:', error);
       // Handle error state (e.g., show a notification)
     }
   };
@@ -186,25 +186,25 @@ const CommonTable = () => {
     // Assume formDataId is the ID of the item you want to delete
     try {
       const response = await fetch(`${baseUrl}/api/product/${formDataId}`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${user?.token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error('Network response was not ok');
       }
 
       const result = await response.json();
       // Handle success (e.g., notify the user, update the UI, etc.)
-      console.log("Delete successful:", result);
+      console.log('Delete successful:', result);
       fetchData();
       // Optionally refresh the data or update state to remove the deleted item
     } catch (error) {
       // Handle error (e.g., show an error message)
-      console.error("Error deleting the data:", error);
+      console.error('Error deleting the data:', error);
     }
     fetchData();
     setIsDeleteOpen(false); // Close the delete confirmation modal
@@ -231,30 +231,30 @@ const CommonTable = () => {
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter((item) =>
-        item.title.toLowerCase().includes(searchTerm.toLowerCase()),
+        item.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Date filter
     if (fromDate) {
       filtered = filtered.filter(
-        (item) => new Date(item.offerDate.startDate) >= new Date(fromDate),
+        (item) => new Date(item.offerDate.startDate) >= new Date(fromDate)
       );
     }
     if (toDate) {
       filtered = filtered.filter(
-        (item) => new Date(item.offerDate.endDate) <= new Date(toDate),
+        (item) => new Date(item.offerDate.endDate) <= new Date(toDate)
       );
     }
 
     // Sort
-    if (sortBy === "ascending") {
+    if (sortBy === 'ascending') {
       filtered.sort((a, b) => {
         const startDateA = new Date(a.offerDate.startDate || 0); // Use 0 for invalid dates
         const startDateB = new Date(b.offerDate.startDate || 0); // Use 0 for invalid dates
         return startDateA.getTime() - startDateB.getTime();
       });
-    } else if (sortBy === "descending") {
+    } else if (sortBy === 'descending') {
       filtered.sort((a, b) => {
         const startDateA = new Date(a.offerDate.startDate || 0); // Use 0 for invalid dates
         const startDateB = new Date(b.offerDate.startDate || 0); // Use 0 for invalid dates
@@ -990,7 +990,7 @@ const CommonTable = () => {
               filteredData.map((packageItem: any, index: any) => (
                 <tr key={index}>
                   <td
-                    className={`h-[60px] border-[#eee] px-4 py-4 dark:border-dark-3 xl:pl-7.5 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                    className={`h-[60px] border-[#eee] px-4 py-4 dark:border-dark-3 xl:pl-7.5 ${index === data.length - 1 ? 'border-b-0' : 'border-b'}`}
                   >
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                       <div className="h-12.5 w-15 rounded-md">
@@ -1007,35 +1007,35 @@ const CommonTable = () => {
                     </div>
                   </td>
                   <td
-                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? 'border-b-0' : 'border-b'}`}
                   >
                     <p className="text-dark dark:text-white">
                       {packageItem?.brand.name}
                     </p>
                   </td>
                   <td
-                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? 'border-b-0' : 'border-b'}`}
                   >
                     <p className="text-dark dark:text-white">
                       {packageItem?.category.name}
                     </p>
                   </td>
                   <td
-                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? 'border-b-0' : 'border-b'}`}
                   >
                     <p className="text-dark dark:text-white">
                       {packageItem.price}
                     </p>
                   </td>
                   <td
-                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? 'border-b-0' : 'border-b'}`}
                   >
                     <p className="text-dark dark:text-white">
                       {packageItem.productType}
                     </p>
                   </td>
                   <td
-                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? 'border-b-0' : 'border-b'}`}
                   >
                     <p className="text-dark dark:text-white">
                       {packageItem.quantity}
@@ -1060,7 +1060,7 @@ const CommonTable = () => {
                 </td>
                 */}
                   <td
-                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 xl:pr-7.5 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
+                    className={`border-[#eee] px-4 py-4 dark:border-dark-3 xl:pr-7.5 ${index === data.length - 1 ? 'border-b-0' : 'border-b'}`}
                   >
                     <div className="flex items-center justify-end space-x-3.5">
                       <button
@@ -1150,4 +1150,4 @@ const CommonTable = () => {
   );
 };
 
-export default CommonTable;
+export default CategoriesTable;

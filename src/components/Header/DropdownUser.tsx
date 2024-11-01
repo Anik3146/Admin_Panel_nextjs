@@ -1,8 +1,8 @@
-import { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import ClickOutside from "@/components/ClickOutside";
-import { useAuth } from "@/app/context/useAuth";
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import ClickOutside from '@/components/ClickOutside';
+import { useAuth } from '@/app/context/useAuth';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -25,8 +25,8 @@ const DropdownUser = () => {
             height={112}
             src="/images/splendid_logo.png"
             style={{
-              width: "auto",
-              height: "auto",
+              width: 'auto',
+              height: 'auto',
             }}
             alt="User"
             className="overflow-hidden rounded-full"
@@ -34,10 +34,10 @@ const DropdownUser = () => {
         </span>
 
         <span className="flex items-center gap-2 font-medium text-dark dark:text-dark-6">
-          <span className="hidden lg:block">{user.name}</span>
+          <span className="hidden lg:block">{user?.name}</span>
 
           <svg
-            className={`fill-current duration-200 ease-in ${dropdownOpen && "rotate-180"}`}
+            className={`fill-current duration-200 ease-in ${dropdownOpen && 'rotate-180'}`}
             width="20"
             height="20"
             viewBox="0 0 20 20"
@@ -66,8 +66,8 @@ const DropdownUser = () => {
                 height={112}
                 src="/images/splendid_logo.png"
                 style={{
-                  width: "auto",
-                  height: "auto",
+                  width: 'auto',
+                  height: 'auto',
                 }}
                 alt="User"
                 className="overflow-hidden rounded-full"
@@ -78,10 +78,10 @@ const DropdownUser = () => {
 
             <span className="block">
               <span className="block font-medium text-dark dark:text-white">
-                {user.name}
+                {user?.name}
               </span>
               <span className="block font-medium text-dark-5 dark:text-dark-6">
-                {user.email}
+                {user?.email}
               </span>
             </span>
           </div>

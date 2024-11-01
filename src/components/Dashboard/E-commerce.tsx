@@ -1,13 +1,13 @@
-"use client";
-import React from "react";
+'use client';
+import React from 'react';
 
-import ChartTwo from "../Charts/ChartTwo";
-import ChatCard from "../Chat/ChatCard";
-import TableOne from "../Tables/TableOne";
-import MapOne from "../Maps/MapOne";
-import DataStatsOne from "@/components/DataStats/DataStatsOne";
-import ChartOne from "@/components/Charts/ChartOne";
-import ChartThree from "../Charts/ChartThree";
+import ChartTwo from '../Charts/ChartTwo';
+import ChatCard from '../Chat/ChatCard';
+import TableOne from '../Tables/TableOne';
+import MapOne from '../Maps/MapOne';
+import DataStatsOne from '@/components/DataStats/DataStatsOne';
+import ChartOne from '@/components/Charts/ChartOne';
+import ChartThree from '../Charts/ChartThree';
 
 const ECommerce: React.FC = () => {
   return (
@@ -18,6 +18,7 @@ const ECommerce: React.FC = () => {
         <ChartOne />
         <ChartTwo />
         <ChartThree />
+
         <MapOne />
         <div className="col-span-12 xl:col-span-8">
           <TableOne />

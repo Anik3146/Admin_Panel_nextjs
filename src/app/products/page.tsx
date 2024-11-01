@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import TableOne from "@/components/Tables/TableOne";
-import TableThree from "@/components/Tables/TableThree";
-import TableTwo from "@/components/Tables/TableTwo";
+import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb';
+import TableOne from '@/components/Tables/TableOne';
+import TableThree from '@/components/Tables/TableThree';
+import TableTwo from '@/components/Tables/TableTwo';
 
-import { Metadata } from "next";
-import DefaultLayout from "@/components/Layouts/DefaultLaout";
-import CommonTable from "@/components/Tables/commonTable";
+import { Metadata } from 'next';
+import DefaultLayout from '@/components/Layouts/DefaultLaout';
+import ProductTable from '@/components/Tables/productTable';
 
 const ProductsPage = () => {
   return (
@@ -15,7 +15,7 @@ const ProductsPage = () => {
       <Breadcrumb pageName="Products" />
 
       <div className="flex flex-col gap-10">
-        <CommonTable />
+        <ProductTable />
       </div>
     </DefaultLayout>
   );
