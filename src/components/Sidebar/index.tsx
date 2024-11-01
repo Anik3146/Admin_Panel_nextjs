@@ -104,7 +104,7 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ['user', 'Admin'],
+        roles: ['Admin'],
         label: 'Calendar',
         route: '/calendar',
       },
@@ -417,6 +417,7 @@ const menuGroups: MenuGroup[] = [
     ],
   },
   //extra
+  /*
   {
     name: 'OTHERS',
     menuItems: [
@@ -516,6 +517,7 @@ const menuGroups: MenuGroup[] = [
       },
     ],
   },
+  */
 ];
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
@@ -561,7 +563,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
             <div className="ml-2 text-2xl font-bold">Admin Panel</div>
           </div>
-          
+
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="block lg:hidden"

@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { setCookie, destroyCookie, parseCookies } from "nookies";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { setCookie, destroyCookie, parseCookies } from 'nookies';
 
 const AuthContext = createContext();
 
@@ -17,12 +17,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData) => {
     setUser(userData); // Set user data after successful login
-    setCookie(null, "user", JSON.stringify(userData), { path: "/" }); // Save to cookie
+    setCookie(null, 'user', JSON.stringify(userData), { path: '/' }); // Save to cookie
   };
 
   const logout = () => {
     setUser(null); // Clear user data on logout
-    destroyCookie(null, "user"); // Remove cookie
+    destroyCookie(null, 'user'); // Remove cookie
   };
 
   return (

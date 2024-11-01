@@ -1,11 +1,11 @@
-"use client";
-import React from "react";
-import Image from "next/image";
-import { useAuth } from "@/app/context/useAuth";
+'use client';
+import React from 'react';
+import Image from 'next/image';
+import { useAuth } from '@/app/context/useAuth';
+import { useRouter } from 'next/router';
 
 const SettingBoxes = () => {
-
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   return (
     <>
@@ -57,7 +57,7 @@ const SettingBoxes = () => {
                         name="fullName"
                         id="fullName"
                         placeholder="Enter your name"
-                        defaultValue={user.name}
+                        defaultValue={user?.name}
                       />
                     </div>
                   </div>
@@ -69,7 +69,7 @@ const SettingBoxes = () => {
                     >
                       Phone Number
                     </label>
-                  
+
                     <div className="relative">
                       <span className="absolute left-4.5 top-1/2 -translate-y-1/2">
                         <svg
@@ -95,7 +95,7 @@ const SettingBoxes = () => {
                         name="phoneNumber"
                         id="phoneNumber"
                         placeholder="Enter your number"
-                        defaultValue={user.phoneNumber}
+                        defaultValue={user?.phoneNumber}
                       />
                     </div>
                   </div>
@@ -132,7 +132,7 @@ const SettingBoxes = () => {
                       name="emailAddress"
                       id="emailAddress"
                       placeholder="Enter your email"
-                      defaultValue={user.email}
+                      defaultValue={user?.email}
                     />
                   </div>
                 </div>
@@ -174,7 +174,7 @@ const SettingBoxes = () => {
                       name="Username"
                       id="Username"
                       placeholder="Enter your username"
-                      defaultValue={user.name}
+                      defaultValue={user?.name}
                     />
                   </div>
                 </div>

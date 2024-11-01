@@ -1,8 +1,8 @@
-"use client";
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useAuth } from "@/app/context/useAuth";
+'use client';
+import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useAuth } from '@/app/context/useAuth';
 
 const ProfileBox = () => {
   const { user } = useAuth();
@@ -18,8 +18,8 @@ const ProfileBox = () => {
             width={970}
             height={260}
             style={{
-              width: "auto",
-              height: "auto",
+              width: 'auto',
+              height: 'auto',
             }}
           />
           <div className="absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
@@ -98,9 +98,9 @@ const ProfileBox = () => {
           </div>
           <div className="mt-4">
             <h3 className="mb-1 text-heading-6 font-bold text-dark dark:text-white">
-              {user.name}
+              {user?.name}
             </h3>
-            <p className="font-medium">{user.role}</p>
+            <p className="font-medium">{user?.role}</p>
             <div className="mx-auto mb-5.5 mt-5 grid max-w-[370px] grid-cols-3 rounded-[5px] border border-stroke py-[9px] shadow-1 dark:border-dark-3 dark:bg-dark-2 dark:shadow-card">
               <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-4 dark:border-dark-3 xsm:flex-row">
                 <span className="font-medium text-dark dark:text-white">
