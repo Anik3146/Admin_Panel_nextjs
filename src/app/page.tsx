@@ -25,13 +25,11 @@ export default function Home() {
       <div>
         {!user ? (
           <SignIn />
-        ) : user.role === 'Admin' ? (
+        ) : (
           <DefaultLayout>
             <ECommerce />
             <BasicChart />
           </DefaultLayout>
-        ) : (
-          <div>You do not have access to this section.</div>
         )}
       </div>
     </>

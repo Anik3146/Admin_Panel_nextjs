@@ -13,12 +13,7 @@ const DropdownUser = () => {
 
   const handleLogout = () => {
     logout();
-    router.push('/');
   };
-
-  useEffect(() => {
-    if (!user) router.push('/');
-  }, [user]);
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
