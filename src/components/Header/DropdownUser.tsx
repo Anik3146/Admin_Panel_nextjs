@@ -1,16 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import ClickOutside from '@/components/ClickOutside';
 import { useAuth } from '@/app/context/useAuth';
+import { useRouter } from 'next/navigation';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
 
+  const router = useRouter();
+
   const handleLogout = () => {
     logout();
+    router.push('/');
   };
+
+  useEffect(() => {
+    if (!user) router.push('/');
+  }, [user]);
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
