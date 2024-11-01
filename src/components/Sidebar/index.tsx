@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import SidebarItem from "@/components/Sidebar/SidebarItem";
-import ClickOutside from "@/components/ClickOutside";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import { useAuth } from "@/app/context/useAuth";
+import React from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import SidebarItem from '@/components/Sidebar/SidebarItem';
+import ClickOutside from '@/components/ClickOutside';
+import useLocalStorage from '@/hooks/useLocalStorage';
+import { useAuth } from '@/app/context/useAuth';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -29,7 +29,7 @@ interface MenuGroup {
 
 const menuGroups: MenuGroup[] = [
   {
-    name: "MAIN MENU",
+    name: 'MAIN MENU',
     menuItems: [
       {
         icon: (
@@ -53,9 +53,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "Dashboard",
-        route: "/",
+        roles: ['Admin'],
+        label: 'Dashboard',
+        route: '/',
         /*
         children: [
           { label: "eCommerce", route: "/" },
@@ -104,9 +104,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["user", "Admin"],
-        label: "Calendar",
-        route: "/calendar",
+        roles: ['user', 'Admin'],
+        label: 'Calendar',
+        route: '/calendar',
       },
       {
         icon: (
@@ -132,9 +132,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        label: "Profile",
-        route: "/profile",
-        roles: ["Admin"],
+        label: 'Profile',
+        route: '/profile',
+        roles: ['Admin'],
       },
       {
         icon: (
@@ -154,16 +154,16 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        label: "Forms",
-        roles: ["Admin"],
-        route: "#",
+        label: 'Forms',
+        roles: ['Admin'],
+        route: '#',
         children: [
           {
-            label: "Form Elements",
-            route: "/forms/form-elements",
-            roles: ["Admin"],
+            label: 'Form Elements',
+            route: '/forms/form-elements',
+            roles: ['Admin'],
           },
-          { label: "Form Layout", route: "/forms/form-layout" },
+          { label: 'Form Layout', route: '/forms/form-layout' },
         ],
       },
       {
@@ -184,10 +184,10 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        label: "Tables",
-        route: "#",
-        roles: ["Admin"],
-        children: [{ label: "Tables", route: "/tables" }],
+        label: 'Tables',
+        route: '#',
+        roles: ['Admin'],
+        children: [{ label: 'Tables', route: '/tables' }],
       },
       {
         icon: (
@@ -207,10 +207,10 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        label: "Pages",
-        route: "#",
-        roles: ["Admin"],
-        children: [{ label: "Settings", route: "/pages/settings" }],
+        label: 'Pages',
+        route: '#',
+        roles: ['Admin'],
+        children: [{ label: 'Settings', route: '/pages/settings' }],
       },
       {
         icon: (
@@ -230,9 +230,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "Products",
-        route: "/products",
+        roles: ['Admin'],
+        label: 'Products',
+        route: '/products',
       },
       {
         icon: (
@@ -252,9 +252,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "Categories",
-        route: "/categories",
+        roles: ['Admin'],
+        label: 'Categories',
+        route: '/categories',
       },
       {
         icon: (
@@ -274,9 +274,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "Brands",
-        route: "/brands",
+        roles: ['Admin'],
+        label: 'Brands',
+        route: '/brands',
       },
       {
         icon: (
@@ -296,9 +296,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "Orders",
-        route: "/orders",
+        roles: ['Admin'],
+        label: 'Orders',
+        route: '/orders',
       },
       {
         icon: (
@@ -318,9 +318,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "Coupons",
-        route: "/coupons",
+        roles: ['Admin'],
+        label: 'Coupons',
+        route: '/coupons',
       },
       {
         icon: (
@@ -340,9 +340,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "User Orders",
-        route: "user-orders",
+        roles: ['Admin'],
+        label: 'User Orders',
+        route: 'user-orders',
       },
       {
         icon: (
@@ -362,9 +362,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "Reviews",
-        route: "/reviews",
+        roles: ['Admin'],
+        label: 'Reviews',
+        route: '/reviews',
       },
       {
         icon: (
@@ -384,9 +384,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["Admin"],
-        label: "Cloudinary",
-        route: "/cloudinary",
+        roles: ['Admin'],
+        label: 'Cloudinary',
+        route: '/cloudinary',
       },
       {
         icon: (
@@ -406,19 +406,19 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        label: "Settings",
-        route: "#",
-        roles: ["Admin"],
+        label: 'Settings',
+        route: '#',
+        roles: ['Admin'],
         children: [
-          { label: "Admins", route: "/Admins" },
-          { label: "Users", route: "/users" },
+          { label: 'Admins', route: '/Admins' },
+          { label: 'Users', route: '/users' },
         ],
       },
     ],
   },
   //extra
   {
-    name: "OTHERS",
+    name: 'OTHERS',
     menuItems: [
       {
         icon: (
@@ -442,10 +442,10 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        roles: ["user", "Admin"],
-        label: "Charts",
-        route: "#",
-        children: [{ label: "Basic Chart", route: "/charts/basic-chart" }],
+        roles: ['user', 'Admin'],
+        label: 'Charts',
+        route: '#',
+        children: [{ label: 'Basic Chart', route: '/charts/basic-chart' }],
       },
       {
         icon: (
@@ -483,11 +483,11 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        label: "UI Elements",
-        route: "#",
+        label: 'UI Elements',
+        route: '#',
         children: [
-          { label: "Alerts", route: "/ui-elements/alerts" },
-          { label: "Buttons", route: "/ui-elements/buttons" },
+          { label: 'Alerts', route: '/ui-elements/alerts' },
+          { label: 'Buttons', route: '/ui-elements/buttons' },
         ],
       },
       {
@@ -510,9 +510,9 @@ const menuGroups: MenuGroup[] = [
             />
           </svg>
         ),
-        label: "Authentication",
-        route: "#",
-        children: [{ label: "Sign In", route: "/auth/signin" }],
+        label: 'Authentication',
+        route: '#',
+        children: [{ label: 'Sign In', route: '/auth/signin' }],
       },
     ],
   },
@@ -521,7 +521,7 @@ const menuGroups: MenuGroup[] = [
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const pathname = usePathname();
   const { user } = useAuth();
-  const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+  const [pageName, setPageName] = useLocalStorage('selectedMenu', 'dashboard');
 
   console.log(menuGroups);
 
@@ -530,35 +530,38 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       <aside
         className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden border-r border-stroke bg-white dark:border-stroke-dark dark:bg-gray-dark lg:static lg:translate-x-0 ${
           sidebarOpen
-            ? "translate-x-0 duration-300 ease-linear"
-            : "-translate-x-full"
+            ? 'translate-x-0 duration-300 ease-linear'
+            : '-translate-x-full'
         }`}
       >
         {/* <!-- SIDEBAR HEADER --> */}
         <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5 xl:py-10">
-           {/* Mobile Logo */}
-        <Image
-          width={50}
-          height={50}
-          src="/images/splendid_logo.png"
-          alt="Logo"
-          priority
-          className="block md:hidden" // Show on mobile, hide on desktop
-          style={{ width: "auto", height: "auto" }}
-        />
-        
-        {/* Desktop Logo */}
-        <Image
-          width={50}
-          height={50}
-          src="/images/splendid_logo.png"
-          alt="Logo"
-          priority
-          className="hidden md:block" // Hide on mobile, show on desktop
-          style={{ width: "auto", height: "auto" }}
-        />
-        <div className="text-2xl font-bold">Admin Panel</div>
-         
+          {/* Mobile Logo */}
+          <div className="flex items-center">
+            <Image
+              width={50}
+              height={50}
+              src="/images/splendid_logo.png"
+              alt="Logo"
+              priority
+              className="block md:hidden" // Show on mobile, hide on desktop
+              style={{ width: 'auto', height: 'auto' }}
+            />
+
+            {/* Desktop Logo */}
+            <Image
+              width={50}
+              height={50}
+              src="/images/splendid_logo.png"
+              alt="Logo"
+              priority
+              className="hidden md:block" // Hide on mobile, show on desktop
+              style={{ width: 'auto', height: 'auto' }}
+            />
+
+            <div className="ml-2 text-2xl font-bold">Admin Panel</div>
+          </div>
+          
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="block lg:hidden"
@@ -595,7 +598,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       (menuItem) =>
                         !menuItem.roles || // No roles defined, show item
                         !menuItem.roles.length || // Empty roles array, show item
-                        menuItem.roles.some((role) => role == user?.role), // Check if user and roles are defined
+                        menuItem.roles.some((role) => role == user?.role) // Check if user and roles are defined
                     )
                     .map((menuItem, menuIndex) => (
                       <SidebarItem
