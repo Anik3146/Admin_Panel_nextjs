@@ -22,41 +22,55 @@ const ProductTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { user } = useAuth();
 
+  interface OfferDate {
+    startDate: Date | null; // can be null if no date is set
+    endDate: Date | null; // can be null if no date is set
+  }
+
   // Define initialFormData first
   const initialFormData = {
-    sku: '',
-    img: '',
-    title: '',
-    slug: '',
-    unit: '',
-    imageURLs: [],
-    parent: '',
-    children: '',
-    price: 0.0,
-    discount: 0.0,
-    quantity: 0,
+    sku: 'PROD12345', // optional field
+    img: 'https://www.chanel.com/images/q_auto:good,f_auto,fl_lossy,dpr_1.1/w_386/FSH-1711464573035-m05.jpg', // valid URL
+    title: 'Stylish Summer T-shirt', // required field with minLength (3) and maxLength (200)
+    slug: 'stylish-summer-t-shirt', // optional field
+    unit: 'piece', // required field
+    imageURLs: [
+      {
+        color: {
+          name: 'Blue', // optional field
+          clrCode: '#0000FF', // optional field
+        },
+        img: 'https://www.chanel.com/images/q_auto:good,f_auto,fl_lossy,dpr_1.1/w_386/FSH-1711464573035-m05.jpg', // valid URL
+        sizes: ['M', 'L', 'XL'], // array of sizes
+      },
+    ],
+    parent: 'ParentCategory123', // required field
+    children: 'ChildCategory456', // required field
+    price: 29.99, // required field, must be non-negative
+    discount: 10, // optional field, non-negative
+    quantity: 100, // required field, non-negative
     brand: {
-      name: '',
-      id: '',
+      name: 'BrandX', // required field
+      id: '60d5f8d0c9e77a4b20d5bca9', // ObjectId reference (could be dynamically generated or fetched from a database)
     },
     category: {
-      name: '',
-      id: '',
+      name: 'T-shirts', // required field
+      id: '60d5f8d0c9e77a4b20d5bca8', // ObjectId reference (could be dynamically generated or fetched from a database)
     },
-    status: 'in-stock',
-    reviews: [],
-    productType: '',
-    description: '',
-    videoId: '',
-    additionalInformation: [],
-    tags: [],
-    sizes: [],
+    status: 'in-stock', // enum values: "in-stock", "out-of-stock", "discontinued"
+    reviews: ['60d5f8d0c9e77a4b20d5bcab'], // array of ObjectIds, can reference Reviews collection
+    productType: 'clothing', // required field, lowercase
+    description: 'A comfortable and stylish t-shirt for the summer.', // required field
+    videoId: 'xyz123456', // optional field
+    additionalInformation: [{ key: 'Material', value: 'Cotton' }], // optional array of additional information objects
+    tags: ['summer', 'fashion', 't-shirt'], // optional array of tags
+    sizes: ['S', 'M', 'L', 'XL'], // array of sizes
     offerDate: {
-      startDate: null,
-      endDate: null,
-    },
-    featured: false,
-    sellCount: 0,
+      startDate: null, // or `undefined` depending on your preference
+      endDate: null, // or `undefined`
+    } as OfferDate,
+    featured: true, // optional field, default false if not provided
+    sellCount: 150, // optional field, min: 0
   };
 
   // Then use it in useState
@@ -277,6 +291,48 @@ const ProductTable = () => {
           onSubmit={handleAdd}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
+          {/* SKU */}
+          <div>
+            <label
+              htmlFor="sku"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              SKU:
+            </label>
+            <input
+              type="text"
+              id="sku"
+              name="sku"
+              value={formData.sku}
+              onChange={(e) =>
+                setFormData({ ...formData, sku: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Image URL */}
+          <div>
+            <label
+              htmlFor="img"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Image URL:
+            </label>
+            <input
+              type="url"
+              id="img"
+              name="img"
+              value={formData.img}
+              onChange={(e) =>
+                setFormData({ ...formData, img: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Product Title */}
           <div>
             <label
               htmlFor="title"
@@ -288,54 +344,99 @@ const ProductTable = () => {
               type="text"
               id="title"
               name="title"
-              value={formData.title} // Bind to formData
+              value={formData.title}
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
-              } // Update state on change
+              }
               required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Change dark:text-gray-300 to dark:text-gray-100 or a custom color
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Slug */}
           <div>
             <label
-              htmlFor="description"
+              htmlFor="slug"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Description:
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description} // Bind to formData
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              } // Update state on change
-              required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
-            ></textarea>
-          </div>
-
-          <div>
-            <label
-              htmlFor="img"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Image URL:
+              Slug:
             </label>
             <input
               type="text"
-              id="img"
-              name="img"
-              value={formData.img} // Bind to formData
+              id="slug"
+              name="slug"
+              value={formData.slug}
               onChange={(e) =>
-                setFormData({ ...formData, img: e.target.value })
-              } // Update state on change
-              required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
+                setFormData({ ...formData, slug: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Unit */}
+          <div>
+            <label
+              htmlFor="unit"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Unit:
+            </label>
+            <input
+              type="text"
+              id="unit"
+              name="unit"
+              value={formData.unit}
+              onChange={(e) =>
+                setFormData({ ...formData, unit: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Parent Category */}
+          <div>
+            <label
+              htmlFor="parent"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Parent Category:
+            </label>
+            <input
+              type="text"
+              id="parent"
+              name="parent"
+              value={formData.parent}
+              onChange={(e) =>
+                setFormData({ ...formData, parent: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Child Category */}
+          <div>
+            <label
+              htmlFor="children"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Child Category:
+            </label>
+            <input
+              type="text"
+              id="children"
+              name="children"
+              value={formData.children}
+              onChange={(e) =>
+                setFormData({ ...formData, children: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Price */}
           <div>
             <label
               htmlFor="price"
@@ -353,11 +454,12 @@ const ProductTable = () => {
               }
               required
               min="0"
-              step="0.01" // Allows for decimal values
+              step="0.01"
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Discount */}
           <div>
             <label
               htmlFor="discount"
@@ -376,13 +478,11 @@ const ProductTable = () => {
                   discount: parseFloat(e.target.value),
                 })
               }
-              required
-              min="0"
-              step="0.01" // Allows for decimal values
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Quantity */}
           <div>
             <label
               htmlFor="quantity"
@@ -394,16 +494,17 @@ const ProductTable = () => {
               type="number"
               id="quantity"
               name="quantity"
-              value={formData.quantity} // Bind to formData
+              value={formData.quantity}
               onChange={(e) =>
-                setFormData({ ...formData, quantity: Number(e.target.value) })
-              } // Update state on change
+                setFormData({ ...formData, quantity: parseInt(e.target.value) })
+              }
               required
               min="0"
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Brand Name */}
           <div>
             <label
               htmlFor="brandName"
@@ -415,18 +516,19 @@ const ProductTable = () => {
               type="text"
               id="brandName"
               name="brandName"
-              value={formData.brand.name} // Bind to formData
+              value={formData.brand.name}
               onChange={(e) =>
                 setFormData({
                   ...formData,
                   brand: { ...formData.brand, name: e.target.value },
                 })
-              } // Update state on change
+              }
               required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Category Name */}
           <div>
             <label
               htmlFor="categoryName"
@@ -438,15 +540,158 @@ const ProductTable = () => {
               type="text"
               id="categoryName"
               name="categoryName"
-              value={formData.category.name} // Bind to formData
+              value={formData.category.name}
               onChange={(e) =>
                 setFormData({
                   ...formData,
                   category: { ...formData.category, name: e.target.value },
                 })
-              } // Update state on change
+              }
               required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Product Type */}
+          <div>
+            <label
+              htmlFor="productType"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Product Type:
+            </label>
+            <input
+              type="text"
+              id="productType"
+              name="productType"
+              value={formData.productType}
+              onChange={(e) =>
+                setFormData({ ...formData, productType: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label
+              htmlFor="description"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Description:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label
+              htmlFor="tags"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Tags:
+            </label>
+            <input
+              type="text"
+              id="tags"
+              name="tags"
+              value={formData.tags.join(', ')}
+              onChange={(e) =>
+                setFormData({ ...formData, tags: e.target.value.split(',') })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Sizes */}
+          <div>
+            <label
+              htmlFor="sizes"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Sizes:
+            </label>
+            <input
+              type="text"
+              id="sizes"
+              name="sizes"
+              value={formData.sizes.join(', ')}
+              onChange={(e) =>
+                setFormData({ ...formData, sizes: e.target.value.split(',') })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Offer Start Date Field */}
+          <div>
+            <label
+              htmlFor="offerStartDate"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Offer Start Date:
+            </label>
+            <input
+              type="date"
+              id="offerStartDate"
+              name="offerStartDate"
+              value={
+                formData.offerDate?.startDate instanceof Date &&
+                !isNaN(formData.offerDate.startDate.getTime())
+                  ? formData.offerDate.startDate.toISOString().split('T')[0]
+                  : ''
+              }
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  offerDate: {
+                    ...formData.offerDate,
+                    startDate: e.target.value ? new Date(e.target.value) : null,
+                  },
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Offer End Date Field */}
+          <div>
+            <label
+              htmlFor="offerEndDate"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Offer End Date:
+            </label>
+            <input
+              type="date"
+              id="offerEndDate"
+              name="offerEndDate"
+              value={
+                formData.offerDate?.endDate instanceof Date &&
+                !isNaN(formData.offerDate.endDate.getTime())
+                  ? formData.offerDate.endDate.toISOString().split('T')[0]
+                  : ''
+              }
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  offerDate: {
+                    ...formData.offerDate,
+                    endDate: e.target.value ? new Date(e.target.value) : null,
+                  },
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
@@ -473,6 +718,27 @@ const ProductTable = () => {
             </select>
           </div>
 
+          {/* Featured */}
+          <div>
+            <label
+              htmlFor="featured"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Featured:
+            </label>
+            <input
+              type="checkbox"
+              id="featured"
+              name="featured"
+              checked={formData.featured}
+              onChange={(e) =>
+                setFormData({ ...formData, featured: e.target.checked })
+              }
+              className="mt-1"
+            />
+          </div>
+
+          {/* Submit Button */}
           <button
             type="submit"
             className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
@@ -491,6 +757,48 @@ const ProductTable = () => {
           onSubmit={handleUpdate}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
+          {/* SKU */}
+          <div>
+            <label
+              htmlFor="sku"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              SKU:
+            </label>
+            <input
+              type="text"
+              id="sku"
+              name="sku"
+              value={formData.sku}
+              onChange={(e) =>
+                setFormData({ ...formData, sku: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Image URL */}
+          <div>
+            <label
+              htmlFor="img"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Image URL:
+            </label>
+            <input
+              type="url"
+              id="img"
+              name="img"
+              value={formData.img}
+              onChange={(e) =>
+                setFormData({ ...formData, img: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Product Title */}
           <div>
             <label
               htmlFor="title"
@@ -502,54 +810,99 @@ const ProductTable = () => {
               type="text"
               id="title"
               name="title"
-              value={formData.title} // Bind to formData
+              value={formData.title}
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
-              } // Update state on change
+              }
               required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Change dark:text-gray-300 to dark:text-gray-100 or a custom color
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Slug */}
           <div>
             <label
-              htmlFor="description"
+              htmlFor="slug"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Description:
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description} // Bind to formData
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              } // Update state on change
-              required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
-            ></textarea>
-          </div>
-
-          <div>
-            <label
-              htmlFor="img"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Image URL:
+              Slug:
             </label>
             <input
               type="text"
-              id="img"
-              name="img"
-              value={formData.img} // Bind to formData
+              id="slug"
+              name="slug"
+              value={formData.slug}
               onChange={(e) =>
-                setFormData({ ...formData, img: e.target.value })
-              } // Update state on change
-              required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
+                setFormData({ ...formData, slug: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Unit */}
+          <div>
+            <label
+              htmlFor="unit"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Unit:
+            </label>
+            <input
+              type="text"
+              id="unit"
+              name="unit"
+              value={formData.unit}
+              onChange={(e) =>
+                setFormData({ ...formData, unit: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Parent Category */}
+          <div>
+            <label
+              htmlFor="parent"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Parent Category:
+            </label>
+            <input
+              type="text"
+              id="parent"
+              name="parent"
+              value={formData.parent}
+              onChange={(e) =>
+                setFormData({ ...formData, parent: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Child Category */}
+          <div>
+            <label
+              htmlFor="children"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Child Category:
+            </label>
+            <input
+              type="text"
+              id="children"
+              name="children"
+              value={formData.children}
+              onChange={(e) =>
+                setFormData({ ...formData, children: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Price */}
           <div>
             <label
               htmlFor="price"
@@ -567,11 +920,12 @@ const ProductTable = () => {
               }
               required
               min="0"
-              step="0.01" // Allows for decimal values
+              step="0.01"
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Discount */}
           <div>
             <label
               htmlFor="discount"
@@ -590,13 +944,11 @@ const ProductTable = () => {
                   discount: parseFloat(e.target.value),
                 })
               }
-              required
-              min="0"
-              step="0.01" // Allows for decimal values
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Quantity */}
           <div>
             <label
               htmlFor="quantity"
@@ -608,16 +960,17 @@ const ProductTable = () => {
               type="number"
               id="quantity"
               name="quantity"
-              value={formData.quantity} // Bind to formData
+              value={formData.quantity}
               onChange={(e) =>
-                setFormData({ ...formData, quantity: Number(e.target.value) })
-              } // Update state on change
+                setFormData({ ...formData, quantity: parseInt(e.target.value) })
+              }
               required
               min="0"
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Brand Name */}
           <div>
             <label
               htmlFor="brandName"
@@ -629,18 +982,19 @@ const ProductTable = () => {
               type="text"
               id="brandName"
               name="brandName"
-              value={formData.brand.name} // Bind to formData
+              value={formData.brand.name}
               onChange={(e) =>
                 setFormData({
                   ...formData,
                   brand: { ...formData.brand, name: e.target.value },
                 })
-              } // Update state on change
+              }
               required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
+          {/* Category Name */}
           <div>
             <label
               htmlFor="categoryName"
@@ -652,15 +1006,158 @@ const ProductTable = () => {
               type="text"
               id="categoryName"
               name="categoryName"
-              value={formData.category.name} // Bind to formData
+              value={formData.category.name}
               onChange={(e) =>
                 setFormData({
                   ...formData,
                   category: { ...formData.category, name: e.target.value },
                 })
-              } // Update state on change
+              }
               required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100" // Same here
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Product Type */}
+          <div>
+            <label
+              htmlFor="productType"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Product Type:
+            </label>
+            <input
+              type="text"
+              id="productType"
+              name="productType"
+              value={formData.productType}
+              onChange={(e) =>
+                setFormData({ ...formData, productType: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label
+              htmlFor="description"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Description:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label
+              htmlFor="tags"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Tags:
+            </label>
+            <input
+              type="text"
+              id="tags"
+              name="tags"
+              value={formData.tags.join(', ')}
+              onChange={(e) =>
+                setFormData({ ...formData, tags: e.target.value.split(',') })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Sizes */}
+          <div>
+            <label
+              htmlFor="sizes"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Sizes:
+            </label>
+            <input
+              type="text"
+              id="sizes"
+              name="sizes"
+              value={formData.sizes.join(', ')}
+              onChange={(e) =>
+                setFormData({ ...formData, sizes: e.target.value.split(',') })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Offer Start Date Field */}
+          <div>
+            <label
+              htmlFor="offerStartDate"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Offer Start Date:
+            </label>
+            <input
+              type="date"
+              id="offerStartDate"
+              name="offerStartDate"
+              value={
+                formData.offerDate?.startDate instanceof Date &&
+                !isNaN(formData.offerDate.startDate.getTime())
+                  ? formData.offerDate.startDate.toISOString().split('T')[0]
+                  : ''
+              }
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  offerDate: {
+                    ...formData.offerDate,
+                    startDate: e.target.value ? new Date(e.target.value) : null,
+                  },
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Offer End Date Field */}
+          <div>
+            <label
+              htmlFor="offerEndDate"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Offer End Date:
+            </label>
+            <input
+              type="date"
+              id="offerEndDate"
+              name="offerEndDate"
+              value={
+                formData.offerDate?.endDate instanceof Date &&
+                !isNaN(formData.offerDate.endDate.getTime())
+                  ? formData.offerDate.endDate.toISOString().split('T')[0]
+                  : ''
+              }
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  offerDate: {
+                    ...formData.offerDate,
+                    endDate: e.target.value ? new Date(e.target.value) : null,
+                  },
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
@@ -685,6 +1182,26 @@ const ProductTable = () => {
               <option value="out-of-stock">Out of Stock</option>
               <option value="discontinued">Discontinued</option>
             </select>
+          </div>
+
+          {/* Featured */}
+          <div>
+            <label
+              htmlFor="featured"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Featured:
+            </label>
+            <input
+              type="checkbox"
+              id="featured"
+              name="featured"
+              checked={formData.featured}
+              onChange={(e) =>
+                setFormData({ ...formData, featured: e.target.checked })
+              }
+              className="mt-1"
+            />
           </div>
 
           <button
@@ -706,10 +1223,54 @@ const ProductTable = () => {
           onSubmit={handleView}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
+          {/* SKU */}
+          <div>
+            <label
+              htmlFor="sku"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              SKU:
+            </label>
+            <input
+              type="text"
+              id="sku"
+              name="sku"
+              value={formData.sku}
+              onChange={(e) =>
+                setFormData({ ...formData, sku: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Image URL */}
+          <div>
+            <label
+              htmlFor="img"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Image URL:
+            </label>
+            <input
+              type="url"
+              id="img"
+              name="img"
+              value={formData.img}
+              onChange={(e) =>
+                setFormData({ ...formData, img: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Product Title */}
           <div>
             <label
               htmlFor="title"
-              className="block font-bold text-gray-700 dark:text-gray-300"
+              className="block font-medium text-gray-700 dark:text-gray-300"
             >
               Product Title:
             </label>
@@ -717,48 +1278,104 @@ const ProductTable = () => {
               type="text"
               id="title"
               name="title"
-              value={formData.title} // Bind to formData
-              disabled // Make field disabled
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             />
           </div>
 
+          {/* Slug */}
           <div>
             <label
-              htmlFor="description"
-              className="block font-bold text-gray-700 dark:text-gray-300"
+              htmlFor="slug"
+              className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Description:
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description} // Bind to formData
-              disabled // Make field disabled
-              required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            ></textarea>
-          </div>
-
-          <div>
-            <label
-              htmlFor="img"
-              className="block font-bold text-gray-700 dark:text-gray-300"
-            >
-              Image URL:
+              Slug:
             </label>
             <input
               type="text"
-              id="img"
-              name="img"
-              value={formData.img} // Bind to formData
-              disabled // Make field disabled
-              required
+              id="slug"
+              name="slug"
+              value={formData.slug}
+              onChange={(e) =>
+                setFormData({ ...formData, slug: e.target.value })
+              }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             />
           </div>
 
+          {/* Unit */}
+          <div>
+            <label
+              htmlFor="unit"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Unit:
+            </label>
+            <input
+              type="text"
+              id="unit"
+              name="unit"
+              value={formData.unit}
+              onChange={(e) =>
+                setFormData({ ...formData, unit: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Parent Category */}
+          <div>
+            <label
+              htmlFor="parent"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Parent Category:
+            </label>
+            <input
+              type="text"
+              id="parent"
+              name="parent"
+              value={formData.parent}
+              onChange={(e) =>
+                setFormData({ ...formData, parent: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Child Category */}
+          <div>
+            <label
+              htmlFor="children"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Child Category:
+            </label>
+            <input
+              type="text"
+              id="children"
+              name="children"
+              value={formData.children}
+              onChange={(e) =>
+                setFormData({ ...formData, children: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Price */}
           <div>
             <label
               htmlFor="price"
@@ -775,13 +1392,14 @@ const ProductTable = () => {
                 setFormData({ ...formData, price: parseFloat(e.target.value) })
               }
               required
-              disabled
               min="0"
-              step="0.01" // Allows for decimal values
+              step="0.01"
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             />
           </div>
 
+          {/* Discount */}
           <div>
             <label
               htmlFor="discount"
@@ -800,18 +1418,16 @@ const ProductTable = () => {
                   discount: parseFloat(e.target.value),
                 })
               }
-              required
-              disabled
-              min="0"
-              step="0.01" // Allows for decimal values
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             />
           </div>
 
+          {/* Quantity */}
           <div>
             <label
               htmlFor="quantity"
-              className="block font-bold text-gray-700 dark:text-gray-300"
+              className="block font-medium text-gray-700 dark:text-gray-300"
             >
               Quantity:
             </label>
@@ -819,18 +1435,22 @@ const ProductTable = () => {
               type="number"
               id="quantity"
               name="quantity"
-              value={formData.quantity} // Bind to formData
-              disabled // Make field disabled
+              value={formData.quantity}
+              onChange={(e) =>
+                setFormData({ ...formData, quantity: parseInt(e.target.value) })
+              }
               required
               min="0"
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             />
           </div>
 
+          {/* Brand Name */}
           <div>
             <label
               htmlFor="brandName"
-              className="block font-bold text-gray-700 dark:text-gray-300"
+              className="block font-medium text-gray-700 dark:text-gray-300"
             >
               Brand Name:
             </label>
@@ -838,17 +1458,24 @@ const ProductTable = () => {
               type="text"
               id="brandName"
               name="brandName"
-              value={formData.brand.name} // Bind to formData
-              disabled // Make field disabled
+              value={formData.brand.name}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  brand: { ...formData.brand, name: e.target.value },
+                })
+              }
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             />
           </div>
 
+          {/* Category Name */}
           <div>
             <label
               htmlFor="categoryName"
-              className="block font-bold text-gray-700 dark:text-gray-300"
+              className="block font-medium text-gray-700 dark:text-gray-300"
             >
               Category Name:
             </label>
@@ -856,32 +1483,212 @@ const ProductTable = () => {
               type="text"
               id="categoryName"
               name="categoryName"
-              value={formData.category.name} // Bind to formData
-              disabled // Make field disabled
+              value={formData.category.name}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  category: { ...formData.category, name: e.target.value },
+                })
+              }
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             />
           </div>
 
+          {/* Product Type */}
+          <div>
+            <label
+              htmlFor="productType"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Product Type:
+            </label>
+            <input
+              type="text"
+              id="productType"
+              name="productType"
+              value={formData.productType}
+              onChange={(e) =>
+                setFormData({ ...formData, productType: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label
+              htmlFor="description"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Description:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label
+              htmlFor="tags"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Tags:
+            </label>
+            <input
+              type="text"
+              id="tags"
+              name="tags"
+              value={formData.tags.join(', ')}
+              onChange={(e) =>
+                setFormData({ ...formData, tags: e.target.value.split(',') })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Sizes */}
+          <div>
+            <label
+              htmlFor="sizes"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Sizes:
+            </label>
+            <input
+              type="text"
+              id="sizes"
+              name="sizes"
+              value={formData.sizes.join(', ')}
+              onChange={(e) =>
+                setFormData({ ...formData, sizes: e.target.value.split(',') })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Offer Start Date Field */}
+          <div>
+            <label
+              htmlFor="offerStartDate"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Offer Start Date:
+            </label>
+            <input
+              type="date"
+              id="offerStartDate"
+              name="offerStartDate"
+              value={
+                formData.offerDate?.startDate instanceof Date &&
+                !isNaN(formData.offerDate.startDate.getTime())
+                  ? formData.offerDate.startDate.toISOString().split('T')[0]
+                  : ''
+              }
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  offerDate: {
+                    ...formData.offerDate,
+                    startDate: e.target.value ? new Date(e.target.value) : null,
+                  },
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Offer End Date Field */}
+          <div>
+            <label
+              htmlFor="offerEndDate"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Offer End Date:
+            </label>
+            <input
+              type="date"
+              id="offerEndDate"
+              name="offerEndDate"
+              value={
+                formData.offerDate?.endDate instanceof Date &&
+                !isNaN(formData.offerDate.endDate.getTime())
+                  ? formData.offerDate.endDate.toISOString().split('T')[0]
+                  : ''
+              }
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  offerDate: {
+                    ...formData.offerDate,
+                    endDate: e.target.value ? new Date(e.target.value) : null,
+                  },
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
+            />
+          </div>
+
+          {/* Status */}
           <div>
             <label
               htmlFor="status"
-              className="block font-bold text-gray-700 dark:text-gray-300"
+              className="block font-medium text-gray-700 dark:text-gray-300"
             >
               Status:
             </label>
             <select
               id="status"
               name="status"
-              value={formData.status} // Bind to formData
-              disabled // Make field disabled
+              value={formData.status}
+              onChange={(e) =>
+                setFormData({ ...formData, status: e.target.value })
+              }
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             >
               <option value="in-stock">In Stock</option>
               <option value="out-of-stock">Out of Stock</option>
               <option value="discontinued">Discontinued</option>
             </select>
+          </div>
+
+          {/* Featured */}
+          <div>
+            <label
+              htmlFor="featured"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Featured:
+            </label>
+            <input
+              type="checkbox"
+              id="featured"
+              name="featured"
+              checked={formData.featured}
+              onChange={(e) =>
+                setFormData({ ...formData, featured: e.target.checked })
+              }
+              className="mt-1"
+              disabled
+            />
           </div>
         </form>
       </Modal>
