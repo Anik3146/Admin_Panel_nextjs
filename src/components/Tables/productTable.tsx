@@ -116,11 +116,13 @@ const ProductTable = () => {
   const handleUpdate = async (e: any) => {
     e.preventDefault(); // Prevent default form submission
 
+    // Log the formData to check if it has been updated
+    console.log('Form Data before update:', formData);
+
     try {
       const response = await fetch(
         `${baseUrl}/api/product/edit-product/${formDataId}`,
         {
-          // Ensure formData.id is the correct field
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -140,7 +142,6 @@ const ProductTable = () => {
       setIsEditOpen(false); // Close the modal or take another action
       fetchData();
     } catch (error) {
-      // Handle error (e.g., show an error message)
       console.error('Error updating the data:', error);
     }
   };
@@ -162,16 +163,20 @@ const ProductTable = () => {
   const handleAdd = async (event: any) => {
     event.preventDefault(); // Prevent the default form submission
 
+    // Prepare the payload with the arrays directly
+    const formDataWithArrays = {
+      ...formData, // This already contains the arrays for tags and sizes
+    };
+
     try {
-      // Make the API call with formData as the payload
+      // Make the API call with formDataWithArrays as the payload
       const response = await fetch(`${baseUrl}/api/product/add`, {
-        // Adjust the endpoint as necessary
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${user?.token}`,
         },
-        body: JSON.stringify(formData), // Directly use formData
+        body: JSON.stringify(formDataWithArrays),
       });
 
       // Check if the response is successful
@@ -592,7 +597,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Tags */}
           <div>
             <label
@@ -605,9 +609,13 @@ const ProductTable = () => {
               type="text"
               id="tags"
               name="tags"
-              value={formData.tags.join(', ')}
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value.split(',') })
+              value={formData.tags.join(', ')} // Display tags as comma-separated string
+              onChange={
+                (e) =>
+                  setFormData({
+                    ...formData,
+                    tags: e.target.value.split(',').map((tag) => tag.trim()),
+                  }) // Split into array on change
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
@@ -625,9 +633,13 @@ const ProductTable = () => {
               type="text"
               id="sizes"
               name="sizes"
-              value={formData.sizes.join(', ')}
-              onChange={(e) =>
-                setFormData({ ...formData, sizes: e.target.value.split(',') })
+              value={formData.sizes.join(', ')} // Display sizes as comma-separated string
+              onChange={
+                (e) =>
+                  setFormData({
+                    ...formData,
+                    sizes: e.target.value.split(',').map((size) => size.trim()),
+                  }) // Split into array on change
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
@@ -1071,9 +1083,13 @@ const ProductTable = () => {
               type="text"
               id="tags"
               name="tags"
-              value={formData.tags.join(', ')}
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value.split(',') })
+              value={formData.tags.join(', ')} // Display tags as comma-separated string
+              onChange={
+                (e) =>
+                  setFormData({
+                    ...formData,
+                    tags: e.target.value.split(',').map((tag) => tag.trim()),
+                  }) // Split into array on change
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
@@ -1091,9 +1107,13 @@ const ProductTable = () => {
               type="text"
               id="sizes"
               name="sizes"
-              value={formData.sizes.join(', ')}
-              onChange={(e) =>
-                setFormData({ ...formData, sizes: e.target.value.split(',') })
+              value={formData.sizes.join(', ')} // Display sizes as comma-separated string
+              onChange={
+                (e) =>
+                  setFormData({
+                    ...formData,
+                    sizes: e.target.value.split(',').map((size) => size.trim()),
+                  }) // Split into array on change
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
@@ -1551,12 +1571,15 @@ const ProductTable = () => {
               type="text"
               id="tags"
               name="tags"
-              value={formData.tags.join(', ')}
-              onChange={(e) =>
-                setFormData({ ...formData, tags: e.target.value.split(',') })
+              value={formData.tags.join(', ')} // Display tags as comma-separated string
+              onChange={
+                (e) =>
+                  setFormData({
+                    ...formData,
+                    tags: e.target.value.split(',').map((tag) => tag.trim()),
+                  }) // Split into array on change
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-              disabled
             />
           </div>
 
@@ -1572,12 +1595,15 @@ const ProductTable = () => {
               type="text"
               id="sizes"
               name="sizes"
-              value={formData.sizes.join(', ')}
-              onChange={(e) =>
-                setFormData({ ...formData, sizes: e.target.value.split(',') })
+              value={formData.sizes.join(', ')} // Display sizes as comma-separated string
+              onChange={
+                (e) =>
+                  setFormData({
+                    ...formData,
+                    sizes: e.target.value.split(',').map((size) => size.trim()),
+                  }) // Split into array on change
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-              disabled
             />
           </div>
 
