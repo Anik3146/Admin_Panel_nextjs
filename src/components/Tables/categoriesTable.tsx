@@ -632,6 +632,7 @@ const CategoriesTable = () => {
                 setFormData({ ...formData, img: e.target.value })
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              disabled
             />
           </div>
 
@@ -652,6 +653,7 @@ const CategoriesTable = () => {
                 setFormData({ ...formData, parent: e.target.value })
               }
               required
+              disabled
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
@@ -668,6 +670,7 @@ const CategoriesTable = () => {
               type="text"
               id="children"
               name="children"
+              disabled
               value={formData.children.join(', ')} // Display as comma-separated list
               onChange={(e) =>
                 setFormData({
@@ -694,6 +697,7 @@ const CategoriesTable = () => {
               id="productType"
               name="productType"
               value={formData.productType}
+              disabled
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -717,6 +721,7 @@ const CategoriesTable = () => {
               id="description"
               name="description"
               value={formData.description}
+              disabled
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
               }
@@ -737,6 +742,7 @@ const CategoriesTable = () => {
               id="status"
               name="status"
               value={formData.status} // Bind to formData
+              disabled
               onChange={(e) =>
                 setFormData({ ...formData, status: e.target.value })
               } // Update state on change
@@ -761,6 +767,7 @@ const CategoriesTable = () => {
               id="featured"
               name="featured"
               checked={formData.featured}
+              disabled
               onChange={(e) =>
                 setFormData({ ...formData, featured: e.target.checked })
               }
