@@ -1572,6 +1572,7 @@ const ProductTable = () => {
               id="tags"
               name="tags"
               value={formData.tags.join(', ')} // Display tags as comma-separated string
+              disabled
               onChange={
                 (e) =>
                   setFormData({
@@ -1596,6 +1597,7 @@ const ProductTable = () => {
               id="sizes"
               name="sizes"
               value={formData.sizes.join(', ')} // Display sizes as comma-separated string
+              disabled
               onChange={
                 (e) =>
                   setFormData({
