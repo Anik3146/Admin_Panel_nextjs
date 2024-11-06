@@ -7,7 +7,7 @@ import FormElements from '../FormElements';
 import { baseUrl } from '@/utils/constant';
 import { useAuth } from '@/app/context/useAuth';
 
-const BrandTable = () => {
+const OrderTable = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -22,15 +22,44 @@ const BrandTable = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { user } = useAuth();
 
-  // Define initialFormData first
   const initialFormData = {
-    logo: 'https://www.chanel.com/images/q_auto:good,f_auto,fl_lossy,dpr_1.1/w_386/FSH-1711464573035-m05.jpg', // Optional field (brand logo URL)
-    name: 'SuperTech', // Required field (brand name, unique)
-    description: 'A leading brand in tech products.', // Optional field (description of the brand)
-    email: 'contact@supertech.com', // Optional field (valid email address)
-    website: 'https://www.supertech.com', // Optional field (brand website URL)
-    location: 'New York, USA', // Optional field (location of the brand)
-    status: 'active', // Enum values: 'active' | 'inactive' (default is 'active')
+    user: '64ab4fcfa9f1d2b3c74f0a3b', // MongoDB ObjectId reference to a user
+    cart: [
+      {
+        productId: '64b01e1fbbd7c1f5d10f8302', // MongoDB ObjectId reference to a product
+        quantity: 2,
+        price: 150.0,
+      },
+      {
+        productId: '64b01e1fbbd7c1f5d10f8303', // MongoDB ObjectId reference to a product
+        quantity: 1,
+        price: 99.99,
+      },
+    ],
+    name: 'John Doe', // Required field (customer's name)
+    address: '123 Main Street, Apt 4B', // Required field (shipping address)
+    email: 'johndoe@example.com', // Required field (customer's email)
+    contact: '+1234567890', // Required field (customer's contact number)
+    city: 'New York', // Required field (city)
+    country: 'USA', // Required field (country)
+    zipCode: '10001', // Required field (postal code)
+    subTotal: 399.99, // Required field (subtotal before shipping and discounts)
+    shippingCost: 15.0, // Optional field (shipping cost)
+    discount: 10.0, // Optional field (discount applied)
+    totalAmount: 404.99, // Required field (total after shipping and discount)
+    shippingOption: 'Express', // Optional field (shipping method, e.g., 'Standard', 'Express')
+    cardInfo: {
+      cardNumber: '4111111111111111', // Required field (card number)
+      expiryDate: '12/25', // Required field (card expiry date)
+      cvv: '123', // Required field (card CVV)
+    },
+    paymentIntent: {
+      id: 'pi_1234567890', // Required field (payment intent ID)
+      status: 'succeeded', // Required field (payment status)
+    },
+    paymentMethod: 'credit_card', // Optional field (payment method, could be 'paypal', 'bank_transfer', etc.)
+    orderNote: 'Please deliver between 9 AM and 5 PM.', // Optional field (any special note)
+    status: 'pending', // Required field (order status: 'pending', 'processing', 'delivered', 'cancel')
   };
 
   // Then use it in useState
@@ -39,13 +68,13 @@ const BrandTable = () => {
   // Fetch data from API
   const fetchData = async () => {
     try {
-      const response = await fetch(`${baseUrl}/api/brand/all`); // Replace with your API endpoint
+      const response = await fetch(`${baseUrl}/api/order/orders`); // Replace with your API endpoint
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
       console.log(data);
-      setData(data.result); // Update state with fetched data
+      setData(data.data); // Update state with fetched data
     } catch (error) {
       console.error('Error fetching packages:', error);
     }
@@ -81,14 +110,17 @@ const BrandTable = () => {
     console.log('Form Data before update:', formData);
 
     try {
-      const response = await fetch(`${baseUrl}/api/brand/edit/${formDataId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user?.token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${baseUrl}/api/order/update-status/${formDataId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${user?.token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -128,7 +160,7 @@ const BrandTable = () => {
 
     try {
       // Make the API call with formDataWithArrays as the payload
-      const response = await fetch(`${baseUrl}/api/brand/add`, {
+      const response = await fetch(`${baseUrl}/api/order/saveOrder`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -163,7 +195,7 @@ const BrandTable = () => {
     // Assume formDataId is the ID of the item you want to delete
     try {
       const response = await fetch(
-        `${baseUrl}/api/brand/delete/${formDataId}`,
+        `${baseUrl}/api/order/delete-order/${formDataId}`,
         {
           method: 'DELETE',
           headers: {
@@ -257,39 +289,58 @@ const BrandTable = () => {
           onSubmit={handleAdd}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
-          {/* Brand Logo URL */}
+          {/* User Information */}
           <div>
             <label
-              htmlFor="logo"
+              htmlFor="user"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Logo URL:
+              User ID:
             </label>
             <input
-              type="url"
-              id="logo"
-              name="logo"
-              value={formData.logo}
+              type="text"
+              id="user"
+              name="user"
+              value={initialFormData.user} // Directly using the user ID from initialFormData
               onChange={(e) =>
-                setFormData({ ...formData, logo: e.target.value })
+                setFormData({ ...formData, user: e.target.value })
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Name */}
+          {/* Cart Items */}
+          <div>
+            <label
+              htmlFor="cart"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Cart Items:
+            </label>
+            <textarea
+              id="cart"
+              name="cart"
+              value={JSON.stringify(initialFormData.cart, null, 2)} // Displaying cart items as a string
+              onChange={(e) =>
+                setFormData({ ...formData, cart: JSON.parse(e.target.value) })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Customer Name */}
           <div>
             <label
               htmlFor="name"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Brand Name:
+              Customer Name:
             </label>
             <input
               type="text"
               id="name"
               name="name"
-              value={formData.name}
+              value={initialFormData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
@@ -298,83 +349,264 @@ const BrandTable = () => {
             />
           </div>
 
-          {/* Brand Description */}
+          {/* Address */}
           <div>
             <label
-              htmlFor="description"
+              htmlFor="address"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Description:
+              Shipping Address:
             </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
+            <input
+              type="text"
+              id="address"
+              name="address"
+              value={initialFormData.address}
               onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+                setFormData({ ...formData, address: e.target.value })
               }
+              required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Email */}
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Brand Email:
+              Email:
             </label>
             <input
               type="email"
               id="email"
               name="email"
-              value={formData.email}
+              value={initialFormData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
+              required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Website */}
+          {/* Contact */}
           <div>
             <label
-              htmlFor="website"
+              htmlFor="contact"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Website URL:
-            </label>
-            <input
-              type="url"
-              id="website"
-              name="website"
-              value={formData.website}
-              onChange={(e) =>
-                setFormData({ ...formData, website: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Location */}
-          <div>
-            <label
-              htmlFor="location"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Location:
+              Contact Number:
             </label>
             <input
               type="text"
-              id="location"
-              name="location"
-              value={formData.location}
+              id="contact"
+              name="contact"
+              value={initialFormData.contact}
               onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
+                setFormData({ ...formData, contact: e.target.value })
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
+          </div>
+
+          {/* City */}
+          <div>
+            <label
+              htmlFor="city"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              City:
+            </label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value={initialFormData.city}
+              onChange={(e) =>
+                setFormData({ ...formData, city: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Country */}
+          <div>
+            <label
+              htmlFor="country"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Country:
+            </label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              value={initialFormData.country}
+              onChange={(e) =>
+                setFormData({ ...formData, country: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Zip Code */}
+          <div>
+            <label
+              htmlFor="zipCode"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Zip Code:
+            </label>
+            <input
+              type="text"
+              id="zipCode"
+              name="zipCode"
+              value={initialFormData.zipCode}
+              onChange={(e) =>
+                setFormData({ ...formData, zipCode: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Subtotal */}
+          <div>
+            <label
+              htmlFor="subTotal"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Subtotal:
+            </label>
+            <input
+              type="number"
+              id="subTotal"
+              name="subTotal"
+              value={initialFormData.subTotal}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  subTotal: parseFloat(e.target.value),
+                })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Shipping Cost */}
+          <div>
+            <label
+              htmlFor="shippingCost"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Shipping Cost:
+            </label>
+            <input
+              type="number"
+              id="shippingCost"
+              name="shippingCost"
+              value={initialFormData.shippingCost}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  shippingCost: parseFloat(e.target.value),
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Discount */}
+          <div>
+            <label
+              htmlFor="discount"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Discount:
+            </label>
+            <input
+              type="number"
+              id="discount"
+              name="discount"
+              value={initialFormData.discount}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  discount: parseFloat(e.target.value),
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Total Amount */}
+          <div>
+            <label
+              htmlFor="totalAmount"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Total Amount:
+            </label>
+            <input
+              type="number"
+              id="totalAmount"
+              name="totalAmount"
+              value={initialFormData.totalAmount}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  totalAmount: parseFloat(e.target.value),
+                })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Shipping Option */}
+          <div>
+            <label
+              htmlFor="shippingOption"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Shipping Option:
+            </label>
+            <input
+              type="text"
+              id="shippingOption"
+              name="shippingOption"
+              value={initialFormData.shippingOption}
+              onChange={(e) =>
+                setFormData({ ...formData, shippingOption: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Order Status */}
+          <div>
+            <label
+              htmlFor="status"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Order Status:
+            </label>
+            <select
+              id="status"
+              name="status"
+              value={initialFormData.status}
+              onChange={(e) =>
+                setFormData({ ...formData, status: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            >
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancel">Cancel</option>
+            </select>
           </div>
 
           {/* Submit Button */}
@@ -396,39 +628,58 @@ const BrandTable = () => {
           onSubmit={handleUpdate}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
-          {/* Brand Logo URL */}
+          {/* User Information */}
           <div>
             <label
-              htmlFor="logo"
+              htmlFor="user"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Logo URL:
+              User ID:
             </label>
             <input
-              type="url"
-              id="logo"
-              name="logo"
-              value={formData.logo}
+              type="text"
+              id="user"
+              name="user"
+              value={initialFormData.user} // Directly using the user ID from initialFormData
               onChange={(e) =>
-                setFormData({ ...formData, logo: e.target.value })
+                setFormData({ ...formData, user: e.target.value })
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Name */}
+          {/* Cart Items */}
+          <div>
+            <label
+              htmlFor="cart"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Cart Items:
+            </label>
+            <textarea
+              id="cart"
+              name="cart"
+              value={JSON.stringify(initialFormData.cart, null, 2)} // Displaying cart items as a string
+              onChange={(e) =>
+                setFormData({ ...formData, cart: JSON.parse(e.target.value) })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Customer Name */}
           <div>
             <label
               htmlFor="name"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Brand Name:
+              Customer Name:
             </label>
             <input
               type="text"
               id="name"
               name="name"
-              value={formData.name}
+              value={initialFormData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
@@ -437,83 +688,264 @@ const BrandTable = () => {
             />
           </div>
 
-          {/* Brand Description */}
+          {/* Address */}
           <div>
             <label
-              htmlFor="description"
+              htmlFor="address"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Description:
+              Shipping Address:
             </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
+            <input
+              type="text"
+              id="address"
+              name="address"
+              value={initialFormData.address}
               onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+                setFormData({ ...formData, address: e.target.value })
               }
+              required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Email */}
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Brand Email:
+              Email:
             </label>
             <input
               type="email"
               id="email"
               name="email"
-              value={formData.email}
+              value={initialFormData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
+              required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Website */}
+          {/* Contact */}
           <div>
             <label
-              htmlFor="website"
+              htmlFor="contact"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Website URL:
-            </label>
-            <input
-              type="url"
-              id="website"
-              name="website"
-              value={formData.website}
-              onChange={(e) =>
-                setFormData({ ...formData, website: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Location */}
-          <div>
-            <label
-              htmlFor="location"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Location:
+              Contact Number:
             </label>
             <input
               type="text"
-              id="location"
-              name="location"
-              value={formData.location}
+              id="contact"
+              name="contact"
+              value={initialFormData.contact}
               onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
+                setFormData({ ...formData, contact: e.target.value })
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
+          </div>
+
+          {/* City */}
+          <div>
+            <label
+              htmlFor="city"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              City:
+            </label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              value={initialFormData.city}
+              onChange={(e) =>
+                setFormData({ ...formData, city: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Country */}
+          <div>
+            <label
+              htmlFor="country"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Country:
+            </label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              value={initialFormData.country}
+              onChange={(e) =>
+                setFormData({ ...formData, country: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Zip Code */}
+          <div>
+            <label
+              htmlFor="zipCode"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Zip Code:
+            </label>
+            <input
+              type="text"
+              id="zipCode"
+              name="zipCode"
+              value={initialFormData.zipCode}
+              onChange={(e) =>
+                setFormData({ ...formData, zipCode: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Subtotal */}
+          <div>
+            <label
+              htmlFor="subTotal"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Subtotal:
+            </label>
+            <input
+              type="number"
+              id="subTotal"
+              name="subTotal"
+              value={initialFormData.subTotal}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  subTotal: parseFloat(e.target.value),
+                })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Shipping Cost */}
+          <div>
+            <label
+              htmlFor="shippingCost"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Shipping Cost:
+            </label>
+            <input
+              type="number"
+              id="shippingCost"
+              name="shippingCost"
+              value={initialFormData.shippingCost}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  shippingCost: parseFloat(e.target.value),
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Discount */}
+          <div>
+            <label
+              htmlFor="discount"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Discount:
+            </label>
+            <input
+              type="number"
+              id="discount"
+              name="discount"
+              value={initialFormData.discount}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  discount: parseFloat(e.target.value),
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Total Amount */}
+          <div>
+            <label
+              htmlFor="totalAmount"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Total Amount:
+            </label>
+            <input
+              type="number"
+              id="totalAmount"
+              name="totalAmount"
+              value={initialFormData.totalAmount}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  totalAmount: parseFloat(e.target.value),
+                })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Shipping Option */}
+          <div>
+            <label
+              htmlFor="shippingOption"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Shipping Option:
+            </label>
+            <input
+              type="text"
+              id="shippingOption"
+              name="shippingOption"
+              value={initialFormData.shippingOption}
+              onChange={(e) =>
+                setFormData({ ...formData, shippingOption: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Order Status */}
+          <div>
+            <label
+              htmlFor="status"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Order Status:
+            </label>
+            <select
+              id="status"
+              name="status"
+              value={initialFormData.status}
+              onChange={(e) =>
+                setFormData({ ...formData, status: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            >
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancel">Cancel</option>
+            </select>
           </div>
           <button
             type="submit"
@@ -534,130 +966,339 @@ const BrandTable = () => {
           onSubmit={handleView}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
-          {/* Brand Logo URL */}
+          {/* User Information */}
           <div>
             <label
-              htmlFor="logo"
+              htmlFor="user"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Logo URL:
+              User ID:
             </label>
             <input
-              type="url"
-              id="logo"
-              name="logo"
-              value={formData.logo}
+              type="text"
+              id="user"
+              name="user"
+              disabled
+              value={initialFormData.user} // Directly using the user ID from initialFormData
               onChange={(e) =>
-                setFormData({ ...formData, logo: e.target.value })
+                setFormData({ ...formData, user: e.target.value })
               }
-              disabled // Disable the input
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Name */}
+          {/* Cart Items */}
+          <div>
+            <label
+              htmlFor="cart"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Cart Items:
+            </label>
+            <textarea
+              id="cart"
+              name="cart"
+              disabled
+              value={JSON.stringify(initialFormData.cart, null, 2)} // Displaying cart items as a string
+              onChange={(e) =>
+                setFormData({ ...formData, cart: JSON.parse(e.target.value) })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Customer Name */}
           <div>
             <label
               htmlFor="name"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Brand Name:
+              Customer Name:
             </label>
             <input
               type="text"
               id="name"
               name="name"
-              value={formData.name}
+              disabled
+              value={initialFormData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
               required
-              disabled // Disable the input
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Description */}
+          {/* Address */}
           <div>
             <label
-              htmlFor="description"
+              htmlFor="address"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Description:
+              Shipping Address:
             </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
+            <input
+              type="text"
+              id="address"
+              name="address"
+              disabled
+              value={initialFormData.address}
               onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+                setFormData({ ...formData, address: e.target.value })
               }
-              disabled // Disable the textarea
+              required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Email */}
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Brand Email:
+              Email:
             </label>
             <input
               type="email"
               id="email"
               name="email"
-              value={formData.email}
+              disabled
+              value={initialFormData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
-              disabled // Disable the input
+              required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Website */}
+          {/* Contact */}
           <div>
             <label
-              htmlFor="website"
+              htmlFor="contact"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Website URL:
-            </label>
-            <input
-              type="url"
-              id="website"
-              name="website"
-              value={formData.website}
-              onChange={(e) =>
-                setFormData({ ...formData, website: e.target.value })
-              }
-              disabled // Disable the input
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Location */}
-          <div>
-            <label
-              htmlFor="location"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Location:
+              Contact Number:
             </label>
             <input
               type="text"
-              id="location"
-              name="location"
-              value={formData.location}
+              id="contact"
+              name="contact"
+              disabled
+              value={initialFormData.contact}
               onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
+                setFormData({ ...formData, contact: e.target.value })
               }
-              disabled // Disable the input
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
+          </div>
+
+          {/* City */}
+          <div>
+            <label
+              htmlFor="city"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              City:
+            </label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              disabled
+              value={initialFormData.city}
+              onChange={(e) =>
+                setFormData({ ...formData, city: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Country */}
+          <div>
+            <label
+              htmlFor="country"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Country:
+            </label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              disabled
+              value={initialFormData.country}
+              onChange={(e) =>
+                setFormData({ ...formData, country: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Zip Code */}
+          <div>
+            <label
+              htmlFor="zipCode"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Zip Code:
+            </label>
+            <input
+              type="text"
+              id="zipCode"
+              name="zipCode"
+              disabled
+              value={initialFormData.zipCode}
+              onChange={(e) =>
+                setFormData({ ...formData, zipCode: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Subtotal */}
+          <div>
+            <label
+              htmlFor="subTotal"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Subtotal:
+            </label>
+            <input
+              type="number"
+              id="subTotal"
+              name="subTotal"
+              disabled
+              value={initialFormData.subTotal}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  subTotal: parseFloat(e.target.value),
+                })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Shipping Cost */}
+          <div>
+            <label
+              htmlFor="shippingCost"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Shipping Cost:
+            </label>
+            <input
+              type="number"
+              id="shippingCost"
+              name="shippingCost"
+              disabled
+              value={initialFormData.shippingCost}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  shippingCost: parseFloat(e.target.value),
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Discount */}
+          <div>
+            <label
+              htmlFor="discount"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Discount:
+            </label>
+            <input
+              type="number"
+              id="discount"
+              name="discount"
+              disabled
+              value={initialFormData.discount}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  discount: parseFloat(e.target.value),
+                })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Total Amount */}
+          <div>
+            <label
+              htmlFor="totalAmount"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Total Amount:
+            </label>
+            <input
+              type="number"
+              id="totalAmount"
+              name="totalAmount"
+              disabled
+              value={initialFormData.totalAmount}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  totalAmount: parseFloat(e.target.value),
+                })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Shipping Option */}
+          <div>
+            <label
+              htmlFor="shippingOption"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Shipping Option:
+            </label>
+            <input
+              type="text"
+              id="shippingOption"
+              name="shippingOption"
+              disabled
+              value={initialFormData.shippingOption}
+              onChange={(e) =>
+                setFormData({ ...formData, shippingOption: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Order Status */}
+          <div>
+            <label
+              htmlFor="status"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Order Status:
+            </label>
+            <select
+              id="status"
+              name="status"
+              disabled
+              value={initialFormData.status}
+              onChange={(e) =>
+                setFormData({ ...formData, status: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            >
+              <option value="pending">Pending</option>
+              <option value="processing">Processing</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancel">Cancel</option>
+            </select>
           </div>
         </form>
       </Modal>
@@ -739,61 +1380,72 @@ const BrandTable = () => {
           <thead>
             <tr className="bg-[#F7F9FC] text-left dark:bg-dark-2">
               <th className="min-w-[220px] px-4 py-4 font-medium text-dark dark:text-white xl:pl-7.5">
-                Brand Logo
+                Customer Name
               </th>
               <th className="min-w-[220px] px-4 py-4 font-medium text-dark dark:text-white xl:pl-7.5">
-                Brand Name
+                Email Address
               </th>
               <th className="min-w-[150px] px-4 py-4 font-medium text-dark dark:text-white">
-                Description
+                Shipping Address
               </th>
               <th className="min-w-[120px] px-4 py-4 font-medium text-dark dark:text-white">
-                Contact Email
+                Contact Number
               </th>
               <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
-                Location
+                City / Country
+              </th>
+              <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
+                Total Amount
+              </th>
+              <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
+                Order Status
               </th>
               <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
                 Action
               </th>
             </tr>
           </thead>
+
           <tbody>
             {filteredData &&
               filteredData.map((packageItem: any, index: any) => (
                 <tr key={index}>
-                  <td className="h-[60px] border-[#eee] px-4 py-4 dark:border-dark-3 xl:pl-7.5">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                      <div className="h-12.5 w-15 rounded-md">
-                        <img
-                          src={packageItem?.logo}
-                          alt="Brand Logo"
-                          width={60}
-                          height={50}
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                  </td>
-                  <td className="border-[#eee] px-4 py-4 dark:border-dark-3">
+                  <td className="border-[#eee] px-4 py-4 dark:border-dark-3 xl:pl-7.5">
                     <p className="text-dark dark:text-white">
-                      {packageItem?.name}
+                      {packageItem?.name} {/* Displaying customer's name */}
                     </p>
                   </td>
                   <td className="border-[#eee] px-4 py-4 dark:border-dark-3">
                     <p className="text-dark dark:text-white">
-                      {packageItem?.description}
+                      {packageItem?.email} {/* Displaying customer's email */}
                     </p>
                   </td>
                   <td className="border-[#eee] px-4 py-4 dark:border-dark-3">
                     <p className="text-dark dark:text-white">
-                      {packageItem?.email}
+                      {packageItem?.address} {/* Displaying shipping address */}
                     </p>
                   </td>
-
                   <td className="border-[#eee] px-4 py-4 dark:border-dark-3">
                     <p className="text-dark dark:text-white">
-                      {packageItem?.location}
+                      {packageItem?.contact}{' '}
+                      {/* Displaying customer's contact number */}
+                    </p>
+                  </td>
+                  <td className="border-[#eee] px-4 py-4 dark:border-dark-3">
+                    <p className="text-dark dark:text-white">
+                      {packageItem?.city}, {packageItem?.country}{' '}
+                      {/* Displaying city and country */}
+                    </p>
+                  </td>
+                  <td className="border-[#eee] px-4 py-4 dark:border-dark-3">
+                    <p className="text-dark dark:text-white">
+                      ${packageItem?.totalAmount}{' '}
+                      {/* Displaying total amount */}
+                    </p>
+                  </td>
+                  <td className="border-[#eee] px-4 py-4 dark:border-dark-3">
+                    <p className="text-dark dark:text-white">
+                      {packageItem?.status} {/* Displaying order status */}
                     </p>
                   </td>
 
@@ -886,4 +1538,4 @@ const BrandTable = () => {
   );
 };
 
-export default BrandTable;
+export default OrderTable;
