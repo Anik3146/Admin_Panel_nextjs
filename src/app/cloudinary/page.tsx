@@ -8,14 +8,15 @@ import TableTwo from '@/components/Tables/TableTwo';
 import { Metadata } from 'next';
 import DefaultLayout from '@/components/Layouts/DefaultLaout';
 import CommonTable from '@/components/Tables/productTable';
+import CloudinaryTable from '@/components/Tables/cloudinaryTable';
 
 const ProductsPage = () => {
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Products" />
+      <Breadcrumb pageName="Cloudinary" />
 
       <div className="flex flex-col gap-10">
-        <CommonTable />
+        <CloudinaryTable />
       </div>
     </DefaultLayout>
   );
