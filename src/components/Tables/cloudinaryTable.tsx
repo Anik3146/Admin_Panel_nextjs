@@ -40,9 +40,6 @@ const CloudinaryTable = () => {
       // Replace '/add-img' with your actual backend upload URL
       const response = await fetch(`${baseUrl}/api/cloudinary/add-img`, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user?.token}`, // Pass the token for authentication
-        },
         body: formData, // FormData automatically handles multipart/form-data content type
       });
 
