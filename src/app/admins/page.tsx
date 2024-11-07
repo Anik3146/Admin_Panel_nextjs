@@ -12,7 +12,7 @@ import CommonTable from '@/components/Tables/productTable';
 const ProductsPage = () => {
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Products" />
+      <Breadcrumb pageName="Admins" />
 
       <div className="flex flex-col gap-10">
         <CommonTable />

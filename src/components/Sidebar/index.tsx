@@ -388,7 +388,7 @@ const menuGroups: MenuGroup[] = [
         route: '#',
         roles: ['Admin'],
         children: [
-          { label: 'Admins', route: '/Admins' },
+          { label: 'Admins', route: '/admins' },
           { label: 'Users', route: '/users' },
         ],
       },
