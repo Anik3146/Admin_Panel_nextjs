@@ -24,12 +24,10 @@ const AdminTable = () => {
 
   // Define initialFormData first
   const initialFormData = {
-    logo: 'https://www.chanel.com/images/q_auto:good,f_auto,fl_lossy,dpr_1.1/w_386/FSH-1711464573035-m05.jpg', // Optional field (brand logo URL)
     name: 'SuperTech', // Required field (brand name, unique)
-    description: 'A leading brand in tech products.', // Optional field (description of the brand)
     email: 'contact@supertech.com', // Optional field (valid email address)
-    website: 'https://www.supertech.com', // Optional field (brand website URL)
-    location: 'New York, USA', // Optional field (location of the brand)
+    verified: true,
+    password: '',
     status: 'active', // Enum values: 'active' | 'inactive' (default is 'active')
   };
 
@@ -39,7 +37,7 @@ const AdminTable = () => {
   // Fetch data from API
   const fetchData = async () => {
     try {
-      const response = await fetch(`${baseUrl}/api/user/all`, {
+      const response = await fetch(`${baseUrl}/api/admin/all`, {
         method: 'GET', // HTTP method (GET is default, but added here for clarity)
         headers: {
           'Content-Type': 'application/json', // Standard header for JSON response
@@ -53,7 +51,7 @@ const AdminTable = () => {
 
       const data = await response.json();
       console.log(data);
-      setData(data); // Update state with fetched data
+      setData(data.data); // Update state with fetched data
     } catch (error) {
       console.error('Error fetching packages:', error);
     }
@@ -89,14 +87,17 @@ const AdminTable = () => {
     console.log('Form Data before update:', formData);
 
     try {
-      const response = await fetch(`${baseUrl}/api/brand/edit/${formDataId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user?.token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        `${baseUrl}/api/admin/update-stuff/${formDataId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${user?.token}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -170,16 +171,13 @@ const AdminTable = () => {
   const confirmDelete = async () => {
     // Assume formDataId is the ID of the item you want to delete
     try {
-      const response = await fetch(
-        `${baseUrl}/api/user/delete-user/${formDataId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${user?.token}`,
-          },
-        }
-      );
+      const response = await fetch(`${baseUrl}/api/admin/${formDataId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user?.token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -255,182 +253,23 @@ const AdminTable = () => {
 
   return (
     <div className="rounded-[10px] border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card sm:p-7.5">
-      {/* Modal for Adding */}
-      <Modal
-        isOpen={isAddOpen}
-        onClose={() => setIsAddOpen(false)}
-        title="Add Package"
-      >
-        <form
-          onSubmit={handleAdd}
-          className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
-        >
-          {/* Brand Logo URL */}
-          <div>
-            <label
-              htmlFor="logo"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Logo URL:
-            </label>
-            <input
-              type="url"
-              id="logo"
-              name="logo"
-              value={formData.logo}
-              onChange={(e) =>
-                setFormData({ ...formData, logo: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Name */}
-          <div>
-            <label
-              htmlFor="name"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Brand Name:
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              required
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Description */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Description:
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Brand Email:
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Website */}
-          <div>
-            <label
-              htmlFor="website"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Website URL:
-            </label>
-            <input
-              type="url"
-              id="website"
-              name="website"
-              value={formData.website}
-              onChange={(e) =>
-                setFormData({ ...formData, website: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Location */}
-          <div>
-            <label
-              htmlFor="location"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Location:
-            </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
-          >
-            Save
-          </button>
-        </form>
-      </Modal>
       {/* Modal for Editing */}
       <Modal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        title="Edit Package"
+        title="Edit Admin Info"
       >
         <form
           onSubmit={handleUpdate}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
-          {/* Brand Logo URL */}
-          <div>
-            <label
-              htmlFor="logo"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Logo URL:
-            </label>
-            <input
-              type="url"
-              id="logo"
-              name="logo"
-              value={formData.logo}
-              onChange={(e) =>
-                setFormData({ ...formData, logo: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Name */}
+          {/* Name */}
           <div>
             <label
               htmlFor="name"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Brand Name:
+              Name:
             </label>
             <input
               type="text"
@@ -445,32 +284,13 @@ const AdminTable = () => {
             />
           </div>
 
-          {/* Brand Description */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Description:
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Email */}
+          {/* Email */}
           <div>
             <label
               htmlFor="email"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Brand Email:
+              Email:
             </label>
             <input
               type="email"
@@ -484,45 +304,68 @@ const AdminTable = () => {
             />
           </div>
 
-          {/* Brand Website */}
+          {/* Password */}
           <div>
             <label
-              htmlFor="website"
+              htmlFor="password"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Website URL:
+              Password:
             </label>
             <input
-              type="url"
-              id="website"
-              name="website"
-              value={formData.website}
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
               onChange={(e) =>
-                setFormData({ ...formData, website: e.target.value })
+                setFormData({ ...formData, password: e.target.value })
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
-          {/* Brand Location */}
+          {/* Status */}
           <div>
             <label
-              htmlFor="location"
+              htmlFor="status"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Location:
+              Status:
             </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
+            <select
+              id="status"
+              name="status"
+              value={formData.status}
               onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
+                setFormData({ ...formData, status: e.target.value })
               }
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+          {/* Verified */}
+          <div>
+            <label
+              htmlFor="verified"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Verified:
+            </label>
+            <input
+              type="checkbox"
+              id="verified"
+              name="verified"
+              checked={formData.verified}
+              onChange={(e) =>
+                setFormData({ ...formData, verified: e.target.checked })
+              }
+              className="mt-1 rounded border border-gray-300 text-blue-500 dark:border-gray-600 dark:bg-gray-700"
             />
           </div>
+
           <button
             type="submit"
             className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
@@ -530,166 +373,6 @@ const AdminTable = () => {
             Update
           </button>
         </form>
-      </Modal>
-
-      {/* Modal for Viewing */}
-      <Modal
-        isOpen={isViewOpen}
-        onClose={() => setIsViewOpen(false)}
-        title="View Package"
-      >
-        <form
-          onSubmit={handleView}
-          className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
-        >
-          {/* Brand Logo URL */}
-          <div>
-            <label
-              htmlFor="logo"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Logo URL:
-            </label>
-            <input
-              type="url"
-              id="logo"
-              name="logo"
-              value={formData.logo}
-              onChange={(e) =>
-                setFormData({ ...formData, logo: e.target.value })
-              }
-              disabled // Disable the input
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Name */}
-          <div>
-            <label
-              htmlFor="name"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Brand Name:
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              required
-              disabled // Disable the input
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Description */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Description:
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              disabled // Disable the textarea
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Brand Email:
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              disabled // Disable the input
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Website */}
-          <div>
-            <label
-              htmlFor="website"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Website URL:
-            </label>
-            <input
-              type="url"
-              id="website"
-              name="website"
-              value={formData.website}
-              onChange={(e) =>
-                setFormData({ ...formData, website: e.target.value })
-              }
-              disabled // Disable the input
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-
-          {/* Brand Location */}
-          <div>
-            <label
-              htmlFor="location"
-              className="block font-medium text-gray-700 dark:text-gray-300"
-            >
-              Location:
-            </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={(e) =>
-                setFormData({ ...formData, location: e.target.value })
-              }
-              disabled // Disable the input
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
-        </form>
-      </Modal>
-      {/* Modal for delete */}
-      <Modal
-        isOpen={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        title="Confirm Deletion"
-      >
-        <p className="mb-4">Are you sure you want to delete this package?</p>
-        <div className="flex justify-end space-x-2">
-          <button
-            onClick={() => setIsDeleteOpen(false)}
-            className="rounded bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-300"
-          >
-            No
-          </button>
-          <button
-            onClick={confirmDelete}
-            className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 dark:bg-red-700"
-          >
-            Yes
-          </button>
-        </div>
       </Modal>
 
       {/* Controls above the table */}
@@ -784,6 +467,24 @@ const AdminTable = () => {
 
                   <td className="border-[#eee] px-4 py-4 dark:border-dark-3 xl:pr-7.5">
                     <div className="flex items-center justify-end space-x-3.5">
+                      <button
+                        className="hover:text-primary"
+                        onClick={() => handleEdit(packageItem._id)}
+                      >
+                        <svg
+                          className="fill-current"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M15.5 0.5C15.9 0.5 16.3 0.6 16.7 1C17.1 1.4 17.3 1.8 17.5 2.3C17.8 2.7 17.9 3.2 17.8 3.7C17.6 4.1 17.3 4.5 16.8 5L14.5 7.3L12.7 5.5L14.5 3.7L15.5 2.7C15.8 2.4 16 2.2 16.3 2.1C16.7 2.1 17 2.3 17.3 2.7C17.6 3 17.8 3.4 17.9 3.8C18 4.3 17.9 4.8 17.7 5.2C17.4 5.6 17.1 6 16.7 6.4L13.3 9.8L10.1 6.6L7.5 9.2L0.7 16L0 20L4 19.3L10.8 13.5L13 15.7L16.5 12.2L18.8 14.5C19.1 14.8 19.4 15.1 19.5 15.6C19.6 16 19.5 16.5 19.3 17C19.1 17.5 18.7 17.9 18.3 18.1C17.8 18.3 17.3 18.2 16.8 18C16.4 17.9 16 17.7 15.5 17.5L15.5 17.5L12.1 14.1L15.5 10.8L18.3 13.7C18.5 14 18.5 14.4 18.5 14.8C18.5 15.2 18.5 15.6 18.4 16C18.2 16.5 18 16.9 17.5 17.4C17 17.9 16.5 18.2 16 18.3C15.5 18.4 15 18.3 14.5 18C14 17.8 13.6 17.5 13.3 17L15.5 15.5L17.1 13.9C17.1 13.9 16.5 14.2 16 14.6C15.5 15 15.2 15.4 15 15.9C14.9 16.4 14.9 16.9 15.1 17.3C15.3 17.8 15.6 18.3 15.5 18.8C15.5 19.3 15.2 19.8 14.7 20C14.2 20.2 13.6 20.1 13 19.8C12.4 19.5 12 19 11.7 18.6L10.5 17.4L9.3 16.2L11.5 14L9.2 11.7L11.3 9.6L13.5 11.8L15.5 9.8C16.1 9.2 16.5 8.3 16.4 7.5C16.3 6.7 16 6 15.5 5.5L16.4 4.6L15.5 3.7L14.5 2.7L12.5 4.7L10.5 2.7L8.5 4.7L6.5 2.7L4.5 4.7L2.5 2.7L0.5 4.7L2.5 6.7L0.5 8.7L0 8.7L0 7.5L2.5 5L5 7.5L7.5 5L10 7.5L12.5 5L15.5 2.5L16.5 1.5L15.5 0.5H15.5Z"
+                            fill=""
+                          />
+                        </svg>
+                      </button>
                       <button
                         className="hover:text-primary"
                         onClick={() => handleDelete(packageItem._id)}
