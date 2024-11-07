@@ -137,11 +137,10 @@ const AdminTable = () => {
 
     try {
       // Make the API call with formDataWithArrays as the payload
-      const response = await fetch(`${baseUrl}/api/brand/add`, {
+      const response = await fetch(`${baseUrl}/api/admin/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user?.token}`,
         },
         body: JSON.stringify(formDataWithArrays),
       });
@@ -253,6 +252,127 @@ const AdminTable = () => {
 
   return (
     <div className="rounded-[10px] border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card sm:p-7.5">
+      <Modal
+        isOpen={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        title="Register"
+      >
+        <form
+          onSubmit={handleAdd}
+          className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
+        >
+          {/* Name */}
+          <div>
+            <label
+              htmlFor="name"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Name:
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              required
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Email:
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label
+              htmlFor="password"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Password:
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            />
+          </div>
+
+          {/* Status */}
+          <div>
+            <label
+              htmlFor="status"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Status:
+            </label>
+            <select
+              id="status"
+              name="status"
+              value={formData.status}
+              onChange={(e) =>
+                setFormData({ ...formData, status: e.target.value })
+              }
+              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+
+          {/* Verified */}
+          <div>
+            <label
+              htmlFor="verified"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
+              Verified:
+            </label>
+            <input
+              type="checkbox"
+              id="verified"
+              name="verified"
+              checked={formData.verified}
+              onChange={(e) =>
+                setFormData({ ...formData, verified: e.target.checked })
+              }
+              className="mt-1 rounded border border-gray-300 text-blue-500 dark:border-gray-600 dark:bg-gray-700"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600"
+          >
+            Save
+          </button>
+        </form>
+      </Modal>
       {/* Modal for Editing */}
       <Modal
         isOpen={isEditOpen}
@@ -377,6 +497,15 @@ const AdminTable = () => {
 
       {/* Controls above the table */}
       <div className="mb-4 flex items-center justify-between">
+        <button
+          onClick={() => {
+            setIsAddOpen(true);
+            setFormData(initialFormData);
+          }}
+          className="mr-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+        >
+          Add new item
+        </button>
         <div className="ml-auto flex items-center space-x-2 text-gray-700">
           <input
             type="text"
@@ -429,8 +558,8 @@ const AdminTable = () => {
               <th className="min-w-[120px] px-4 py-4 font-medium text-dark dark:text-white">
                 Role
               </th>
-              <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
-                Status
+              <th className="px-4 py-4 text-left font-medium text-dark dark:text-white xl:pr-7.5">
+                Verification Status
               </th>
               <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
                 Action
@@ -461,7 +590,9 @@ const AdminTable = () => {
 
                   <td className="border-[#eee] px-4 py-4 dark:border-dark-3">
                     <p className="text-dark dark:text-white">
-                      {packageItem?.status}
+                      {packageItem?.verified == true
+                        ? 'Verified'
+                        : 'Not verified'}
                     </p>
                   </td>
 

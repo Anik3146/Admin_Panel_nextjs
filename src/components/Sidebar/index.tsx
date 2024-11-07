@@ -420,7 +420,7 @@ const menuGroups: MenuGroup[] = [
         roles: ['Admin'],
         children: [
           { label: 'Admins', route: '/admins' },
-          { label: 'Users', route: '/users' },
+          { label: 'Customers', route: '/users' },
         ],
       },
     ],

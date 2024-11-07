@@ -746,7 +746,7 @@ const UserTable = () => {
               <th className="min-w-[120px] px-4 py-4 font-medium text-dark dark:text-white">
                 Role
               </th>
-              <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
+              <th className="px-4 py-4 text-left font-medium text-dark dark:text-white xl:pr-7.5">
                 Status
               </th>
               <th className="px-4 py-4 text-right font-medium text-dark dark:text-white xl:pr-7.5">
