@@ -20,6 +20,8 @@ const ProductTable = () => {
   const [formDataId, setFormDataId] = useState<any>();
   const [filteredData, setFilteredData] = useState(data);
   const [searchTerm, setSearchTerm] = useState('');
+  const [categories, setCategories] = useState<any[]>();
+  const [brands, setBrands] = useState<any[]>();
   const { user } = useAuth();
 
   interface OfferDate {
@@ -49,14 +51,8 @@ const ProductTable = () => {
     price: 29.99, // required field, must be non-negative
     discount: 10, // optional field, non-negative
     quantity: 100, // required field, non-negative
-    brand: {
-      name: 'BrandX', // required field
-      id: '60d5f8d0c9e77a4b20d5bca9', // ObjectId reference (could be dynamically generated or fetched from a database)
-    },
-    category: {
-      name: 'T-shirts', // required field
-      id: '60d5f8d0c9e77a4b20d5bca8', // ObjectId reference (could be dynamically generated or fetched from a database)
-    },
+    brand: { id: '', name: '' },
+    category: { id: '', name: '' },
     status: 'in-stock', // enum values: "in-stock", "out-of-stock", "discontinued"
     reviews: ['60d5f8d0c9e77a4b20d5bcab'], // array of ObjectIds, can reference Reviews collection
     productType: 'clothing', // required field, lowercase
@@ -90,6 +86,33 @@ const ProductTable = () => {
     }
   };
 
+  const fetchCategoriesData = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/api/category/all`); // Replace with your API endpoint
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+
+      setCategories(data.result); // Update state with fetched data
+    } catch (error) {
+      console.error('Error fetching packages:', error);
+    }
+  };
+
+  const fetchBrandsData = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/api/brand/all`); // Replace with your API endpoint
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log(data);
+      setBrands(data.result); // Update state with fetched data
+    } catch (error) {
+      console.error('Error fetching packages:', error);
+    }
+  };
   const handleSortChange = (e: any) => {
     setSortBy(e.target.value);
     if (e.target.value === 'custom') {
@@ -231,7 +254,12 @@ const ProductTable = () => {
 
   useEffect(() => {
     fetchData();
+    fetchBrandsData();
+    fetchCategoriesData();
   }, []);
+
+  useEffect(() => {}, [brands]);
+  useEffect(() => {}, [categories]);
 
   useEffect(() => {
     console.log(data);
@@ -315,7 +343,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Image URL */}
           <div>
             <label
@@ -336,7 +363,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Product Title */}
           <div>
             <label
@@ -357,7 +383,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Slug */}
           <div>
             <label
@@ -377,7 +402,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Unit */}
           <div>
             <label
@@ -398,7 +422,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Parent Category */}
           <div>
             <label
@@ -419,7 +442,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Child Category */}
           <div>
             <label
@@ -440,7 +462,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Price */}
           <div>
             <label
@@ -463,7 +484,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Discount */}
           <div>
             <label
@@ -486,7 +506,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Quantity */}
           <div>
             <label
@@ -508,8 +527,7 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
-          {/* Brand Name */}
+          {/*Brand */}
           <div>
             <label
               htmlFor="brandName"
@@ -517,23 +535,38 @@ const ProductTable = () => {
             >
               Brand Name:
             </label>
-            <input
-              type="text"
+            <select
               id="brandName"
               name="brandName"
-              value={formData.brand.name}
-              onChange={(e) =>
+              value={formData.brand.id} // Use the id from the state
+              onChange={(e) => {
+                const selectedBrand = brands?.find(
+                  (brand) => brand._id === e.target.value
+                );
                 setFormData({
                   ...formData,
-                  brand: { ...formData.brand, name: e.target.value },
-                })
-              }
+                  brand: selectedBrand
+                    ? { id: selectedBrand._id, name: selectedBrand.name }
+                    : { id: '', name: '' }, // Update state with id and name
+                });
+              }}
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
+            >
+              <option value="" disabled>
+                Select a Brand
+              </option>
+              {brands &&
+                brands.map((brand) => (
+                  <option key={brand._id} value={brand._id}>
+                    {' '}
+                    {/* Use _id as the option value */}
+                    {brand.name}
+                  </option>
+                ))}
+            </select>
           </div>
-
-          {/* Category Name */}
+          {/*Category */}
           <div>
             <label
               htmlFor="categoryName"
@@ -541,22 +574,41 @@ const ProductTable = () => {
             >
               Category Name:
             </label>
-            <input
-              type="text"
+            <select
               id="categoryName"
               name="categoryName"
-              value={formData.category.name}
-              onChange={(e) =>
+              value={formData.category.id} // Use the id from the state
+              onChange={(e) => {
+                const selectedCategory = categories?.find(
+                  (category) => category._id === e.target.value
+                );
                 setFormData({
                   ...formData,
-                  category: { ...formData.category, name: e.target.value },
-                })
-              }
+                  category: selectedCategory
+                    ? {
+                        id: selectedCategory._id,
+                        name: selectedCategory.parent,
+                      } // Map parent to name
+                    : { id: '', name: '' },
+                });
+              }}
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
+            >
+              <option value="" disabled>
+                Select a Category
+              </option>
+              {categories &&
+                categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {' '}
+                    {/* Use _id as the option value */}
+                    {category.parent}{' '}
+                    {/* Use 'parent' as the display name for category */}
+                  </option>
+                ))}
+            </select>
           </div>
-
           {/* Product Type */}
           <div>
             <label
@@ -577,7 +629,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Description */}
           <div>
             <label
@@ -620,7 +671,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Sizes */}
           <div>
             <label
@@ -644,7 +694,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Offer Start Date Field */}
           <div>
             <label
@@ -675,7 +724,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           {/* Offer End Date Field */}
           <div>
             <label
@@ -706,7 +754,6 @@ const ProductTable = () => {
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
-
           <div>
             <label
               htmlFor="status"
@@ -729,7 +776,6 @@ const ProductTable = () => {
               <option value="discontinued">Discontinued</option>
             </select>
           </div>
-
           {/* Featured */}
           <div>
             <label
@@ -749,7 +795,6 @@ const ProductTable = () => {
               className="mt-1"
             />
           </div>
-
           {/* Submit Button */}
           <button
             type="submit"
@@ -982,7 +1027,7 @@ const ProductTable = () => {
             />
           </div>
 
-          {/* Brand Name */}
+          {/*Brand */}
           <div>
             <label
               htmlFor="brandName"
@@ -990,23 +1035,38 @@ const ProductTable = () => {
             >
               Brand Name:
             </label>
-            <input
-              type="text"
+            <select
               id="brandName"
               name="brandName"
-              value={formData.brand.name}
-              onChange={(e) =>
+              value={formData.brand.id} // Use the id from the state
+              onChange={(e) => {
+                const selectedBrand = brands?.find(
+                  (brand) => brand._id === e.target.value
+                );
                 setFormData({
                   ...formData,
-                  brand: { ...formData.brand, name: e.target.value },
-                })
-              }
+                  brand: selectedBrand
+                    ? { id: selectedBrand._id, name: selectedBrand.name }
+                    : { id: '', name: '' }, // Update state with id and name
+                });
+              }}
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
+            >
+              <option value="" disabled>
+                Select a Brand
+              </option>
+              {brands &&
+                brands.map((brand) => (
+                  <option key={brand._id} value={brand._id}>
+                    {' '}
+                    {/* Use _id as the option value */}
+                    {brand.name}
+                  </option>
+                ))}
+            </select>
           </div>
-
-          {/* Category Name */}
+          {/*Category */}
           <div>
             <label
               htmlFor="categoryName"
@@ -1014,20 +1074,40 @@ const ProductTable = () => {
             >
               Category Name:
             </label>
-            <input
-              type="text"
+            <select
               id="categoryName"
               name="categoryName"
-              value={formData.category.name}
-              onChange={(e) =>
+              value={formData.category.id} // Use the id from the state
+              onChange={(e) => {
+                const selectedCategory = categories?.find(
+                  (category) => category._id === e.target.value
+                );
                 setFormData({
                   ...formData,
-                  category: { ...formData.category, name: e.target.value },
-                })
-              }
+                  category: selectedCategory
+                    ? {
+                        id: selectedCategory._id,
+                        name: selectedCategory.parent,
+                      } // Map parent to name
+                    : { id: '', name: '' },
+                });
+              }}
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
+            >
+              <option value="" disabled>
+                Select a Category
+              </option>
+              {categories &&
+                categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {' '}
+                    {/* Use _id as the option value */}
+                    {category.parent}{' '}
+                    {/* Use 'parent' as the display name for category */}
+                  </option>
+                ))}
+            </select>
           </div>
 
           {/* Product Type */}
@@ -1466,7 +1546,7 @@ const ProductTable = () => {
             />
           </div>
 
-          {/* Brand Name */}
+          {/*Brand */}
           <div>
             <label
               htmlFor="brandName"
@@ -1474,24 +1554,39 @@ const ProductTable = () => {
             >
               Brand Name:
             </label>
-            <input
-              type="text"
+            <select
               id="brandName"
               name="brandName"
-              value={formData.brand.name}
-              onChange={(e) =>
+              value={formData.brand.id} // Use the id from the state
+              onChange={(e) => {
+                const selectedBrand = brands?.find(
+                  (brand) => brand._id === e.target.value
+                );
                 setFormData({
                   ...formData,
-                  brand: { ...formData.brand, name: e.target.value },
-                })
-              }
+                  brand: selectedBrand
+                    ? { id: selectedBrand._id, name: selectedBrand.name }
+                    : { id: '', name: '' }, // Update state with id and name
+                });
+              }}
+              disabled
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-              disabled
-            />
+            >
+              <option value="" disabled>
+                Select a Brand
+              </option>
+              {brands &&
+                brands.map((brand) => (
+                  <option key={brand._id} value={brand._id}>
+                    {' '}
+                    {/* Use _id as the option value */}
+                    {brand.name}
+                  </option>
+                ))}
+            </select>
           </div>
-
-          {/* Category Name */}
+          {/*Category */}
           <div>
             <label
               htmlFor="categoryName"
@@ -1499,21 +1594,41 @@ const ProductTable = () => {
             >
               Category Name:
             </label>
-            <input
-              type="text"
+            <select
               id="categoryName"
               name="categoryName"
-              value={formData.category.name}
-              onChange={(e) =>
+              value={formData.category.id} // Use the id from the state
+              disabled
+              onChange={(e) => {
+                const selectedCategory = categories?.find(
+                  (category) => category._id === e.target.value
+                );
                 setFormData({
                   ...formData,
-                  category: { ...formData.category, name: e.target.value },
-                })
-              }
+                  category: selectedCategory
+                    ? {
+                        id: selectedCategory._id,
+                        name: selectedCategory.parent,
+                      } // Map parent to name
+                    : { id: '', name: '' },
+                });
+              }}
               required
               className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-              disabled
-            />
+            >
+              <option value="" disabled>
+                Select a Category
+              </option>
+              {categories &&
+                categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {' '}
+                    {/* Use _id as the option value */}
+                    {category.parent}{' '}
+                    {/* Use 'parent' as the display name for category */}
+                  </option>
+                ))}
+            </select>
           </div>
 
           {/* Product Type */}
