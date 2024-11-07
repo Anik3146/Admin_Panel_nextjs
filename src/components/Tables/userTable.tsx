@@ -171,7 +171,7 @@ const UserTable = () => {
     // Assume formDataId is the ID of the item you want to delete
     try {
       const response = await fetch(
-        `${baseUrl}/api/brand/delete/${formDataId}`,
+        `${baseUrl}/api/user/delete-user/${formDataId}`,
         {
           method: 'DELETE',
           headers: {
@@ -694,15 +694,6 @@ const UserTable = () => {
 
       {/* Controls above the table */}
       <div className="mb-4 flex items-center justify-between">
-        <button
-          onClick={() => {
-            setIsAddOpen(true);
-            setFormData(initialFormData);
-          }}
-          className="mr-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-        >
-          Add new item
-        </button>
         <div className="ml-auto flex items-center space-x-2 text-gray-700">
           <input
             type="text"
