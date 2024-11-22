@@ -399,7 +399,7 @@ const AdminTable = () => {
 
       {/* Controls above the table */}
       <div className="mb-4 flex items-center justify-between">
-        <button
+        {/* <button
           onClick={() => {
             setIsAddOpen(true);
             setFormData(initialFormData);
@@ -407,7 +407,7 @@ const AdminTable = () => {
           className="mr-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
         >
           Add new item
-        </button>
+        </button> */}
         <div className="ml-auto flex items-center space-x-2 text-gray-700">
           <input
             type="text"
