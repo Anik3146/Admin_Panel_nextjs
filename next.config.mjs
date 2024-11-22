@@ -36,7 +36,13 @@ const nextConfig = {
         protocol: 'http',
         hostname: 'localhost',
         port: '',
-        pathname: '/**', // For local development
+        pathname: '/**', // For local development 'res.cloudinary.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**', // For local development 'res.cloudinary.com'
       },
     ],
   },

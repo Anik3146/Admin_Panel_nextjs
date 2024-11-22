@@ -1,1 +1,1 @@
-export const baseUrl = "https://splendid-aura-backend.vercel.app";
+export const baseUrl = "http://localhost:7000";
