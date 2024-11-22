@@ -47,6 +47,62 @@ const CategoriesTable = () => {
   // Then use it in useState
   const [formData, setFormData] = useState(initialFormData);
 
+  // State to store the selected file
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  // State to track upload status
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Handle file selection
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      setImageFile(file);
+    }
+  };
+
+  // Handle image upload to Cloudinary using fetch
+  const handleImageUpload = async () => {
+    if (!imageFile) {
+      setError('No file selected');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('image', imageFile);
+
+    try {
+      // Replace '/add-img' with your actual backend upload URL
+      const response = await fetch(`${baseUrl}/api/cloudinary/add`, {
+        method: 'POST',
+        body: formDataToSend, // FormData automatically handles multipart/form-data content type
+      });
+
+      // Check if the response is OK (status 200-299)
+      if (!response.ok) {
+        throw new Error('Image upload failed');
+      }
+
+      const data = await response.json();
+
+      // Assuming the response contains a field `imageUrl` with the uploaded image URL
+      const uploadedImageUrl = data.imageUrl;
+
+      // Set the uploaded image URL to formData.img
+      setFormData({ ...formData, img: uploadedImageUrl });
+
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setError('Upload failed. Please try again.');
+      console.error(err);
+    }
+  };
+
   // Fetch data from API
   const fetchData = async () => {
     try {
@@ -271,24 +327,48 @@ const CategoriesTable = () => {
           onSubmit={handleAdd}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
-          {/* Category Image URL */}
+          {/* Image URL */}
           <div>
             <label
-              htmlFor="img"
+              htmlFor="title"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Image URL:
+              Image:
             </label>
-            <input
-              type="url"
-              id="img"
-              name="img"
-              value={formData.img}
-              onChange={(e) =>
-                setFormData({ ...formData, img: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
+            {/* Image URL */}
+            <div className="rounded-[10px] border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card sm:p-7.5">
+              {/* File input */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="rounded-md border border-gray-300 p-2"
+              />
+
+              {/* Upload button */}
+              <button
+                onClick={handleImageUpload}
+                disabled={loading || !imageFile}
+                className="mx-2 mt-3 rounded-md bg-blue-500 p-2 text-white"
+              >
+                {loading ? 'Uploading...' : 'Upload Image'}
+              </button>
+
+              {/* Display error message */}
+              {error && <p className="mt-2 text-red-500">{error}</p>}
+
+              {/* Display uploaded image */}
+              {formData.img && (
+                <div className="mt-4">
+                  <p>Uploaded Image:</p>
+                  <img
+                    src={formData.img}
+                    alt="Uploaded"
+                    className="mt-2 max-w-xs"
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Parent Category */}
@@ -443,26 +523,49 @@ const CategoriesTable = () => {
           onSubmit={handleUpdate}
           className="grid grid-cols-1 gap-4 bg-white p-4 dark:bg-gray-800"
         >
-          {/* Category Image URL */}
+          {/* Image URL */}
           <div>
             <label
-              htmlFor="img"
+              htmlFor="title"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Image URL:
+              Image:
             </label>
-            <input
-              type="url"
-              id="img"
-              name="img"
-              value={formData.img}
-              onChange={(e) =>
-                setFormData({ ...formData, img: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-          </div>
+            {/* Image URL */}
+            <div className="rounded-[10px] border border-stroke bg-white p-4 shadow-1 dark:border-dark-3 dark:bg-gray-dark dark:shadow-card sm:p-7.5">
+              {/* File input */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="rounded-md border border-gray-300 p-2"
+              />
 
+              {/* Upload button */}
+              <button
+                onClick={handleImageUpload}
+                disabled={loading || !imageFile}
+                className="mx-2 mt-3 rounded-md bg-blue-500 p-2 text-white"
+              >
+                {loading ? 'Uploading...' : 'Upload Image'}
+              </button>
+
+              {/* Display error message */}
+              {error && <p className="mt-2 text-red-500">{error}</p>}
+
+              {/* Display uploaded image */}
+              {formData.img && (
+                <div className="mt-4">
+                  <p>Uploaded Image:</p>
+                  <img
+                    src={formData.img}
+                    alt="Uploaded"
+                    className="mt-2 max-w-xs"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
           {/* Parent Category */}
           <div>
             <label
@@ -621,19 +724,9 @@ const CategoriesTable = () => {
               htmlFor="img"
               className="block font-medium text-gray-700 dark:text-gray-300"
             >
-              Image URL:
+              Image:
             </label>
-            <input
-              type="url"
-              id="img"
-              name="img"
-              value={formData.img}
-              onChange={(e) =>
-                setFormData({ ...formData, img: e.target.value })
-              }
-              className="mt-1 w-full rounded border border-gray-300 p-2 text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-              disabled
-            />
+            <img src={formData.img} alt="Uploaded" className="mt-2 max-w-xs" />
           </div>
 
           {/* Parent Category */}
