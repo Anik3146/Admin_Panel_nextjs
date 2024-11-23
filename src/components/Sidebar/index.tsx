@@ -627,17 +627,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             />
 
             {/* Desktop Logo */}
-            <Image
-              width={50}
-              height={50}
-              src="/images/splendid_logo.png"
-              alt="Logo"
-              priority
-              className="hidden md:block" // Hide on mobile, show on desktop
-              style={{ width: 'auto', height: 'auto' }}
-            />
+            <Link href={'/'}>
+              <Image
+                width={50}
+                height={50}
+                src="/images/splendid_logo.png"
+                alt="Logo"
+                priority
+                className="hidden md:block" // Hide on mobile, show on desktop
+                style={{ width: 'auto', height: 'auto' }}
+              />
+            </Link>
 
-            <div className="ml-2 text-2xl font-bold">Admin Panel</div>
+            <Link href={'/'}>
+              <div className="ml-2 text-2xl font-bold">Admin Panel</div>
+            </Link>
           </div>
 
           <button
