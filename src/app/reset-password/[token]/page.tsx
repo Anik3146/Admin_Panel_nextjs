@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation'; // Importing useParams correctly
 import { baseUrl } from '@/utils/constant';
+import { toast } from 'react-toastify';
 
 export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState('');
@@ -43,18 +44,23 @@ export default function ResetPassword() {
 
       if (response.ok) {
         setMessage('Password reset successfully!');
-        setTimeout(() => {
-          router.push('/'); // Redirect to login after successful reset
-        }, 2000);
+        toast.success('Password reset successfully!');
+        router.push('/');
       } else {
         const data = await response.json();
         setMessage(
           data.message ||
             'Your reset link is expired. Try again using forget password'
         );
+
+        toast.error(
+          data.message ||
+            'Your reset link is expired. Try again using forget password'
+        );
       }
     } catch (error) {
       setMessage('Network error. Please try again later.');
+      toast.error('Network error. Please try again later.');
     } finally {
       setIsLoading(false);
     }

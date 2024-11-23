@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { baseUrl } from '@/utils/constant';
+import { toast } from 'react-toastify';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -27,9 +28,13 @@ export default function ForgotPassword() {
 
       if (response.ok) {
         setMessage('Please check your email for password reset instructions.');
+        toast.success(
+          'Please check your email for password reset instructions.'
+        );
       } else {
         const data = await response.json();
         setMessage(data.message || 'Something went wrong.');
+        toast.error(data.message);
       }
     } catch (error) {
       setMessage('Network error. Please try again later.');

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { baseUrl } from '@/utils/constant';
+import { toast } from 'react-toastify';
 
 const VerifyEmailPage = () => {
   const [message, setMessage] = useState('');
@@ -23,11 +24,13 @@ const VerifyEmailPage = () => {
 
         if (res.ok) {
           setMessage('Your account has been successfully verified!');
+          toast.success('Your account has been successfully verified!');
         } else {
           setMessage(data.message || 'Verification failed. Please try again.');
         }
       } catch (error) {
         setMessage('Network error. Please try again.');
+        toast.error('Network error. Please try again.');
       } finally {
         setIsLoading(false);
       }

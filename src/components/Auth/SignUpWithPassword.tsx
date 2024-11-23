@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/app/context/useAuth';
 import { baseUrl } from '@/utils/constant';
+import { toast } from 'react-toastify'; // Import toast function
 
 export default function SingUpWithPassword() {
   const { user, login } = useAuth();
@@ -40,9 +41,11 @@ export default function SingUpWithPassword() {
       }
 
       const result = await response.json();
+      toast.success('Registration successful!');
       console.log(result);
     } catch (err) {
       console.log('error signup');
+      toast.error('Registration failed. Please try again!'); // Error toast
     }
   };
 

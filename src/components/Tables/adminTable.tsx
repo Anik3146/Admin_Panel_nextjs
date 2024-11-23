@@ -6,6 +6,7 @@ import Modal from '../modals/Modal';
 import FormElements from '../FormElements';
 import { baseUrl } from '@/utils/constant';
 import { useAuth } from '@/app/context/useAuth';
+import { toast } from 'react-toastify';
 
 const AdminTable = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -185,6 +186,7 @@ const AdminTable = () => {
       const result = await response.json();
       // Handle success (e.g., notify the user, update the UI, etc.)
       console.log('Delete successful:', result);
+      toast.success('User deleted successfully!');
       fetchData();
       // Optionally refresh the data or update state to remove the deleted item
     } catch (error) {
