@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/app/context/useAuth';
 import { baseUrl } from '@/utils/constant';
+import { toast } from 'react-toastify';
 
 const ProfileBox = () => {
   const { user } = useAuth();
@@ -29,8 +30,10 @@ const ProfileBox = () => {
     const data = await response.json();
     if (response.ok) {
       setMessage('Password changed successfully!');
+      toast.success('Password changed successfully!');
     } else {
       setMessage(data.message || 'Failed to change password');
+      toast.error(data.message || 'Failed to change password');
     }
   };
 

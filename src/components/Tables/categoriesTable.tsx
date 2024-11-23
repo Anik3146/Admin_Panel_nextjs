@@ -6,6 +6,7 @@ import Modal from '../modals/Modal';
 import FormElements from '../FormElements';
 import { baseUrl } from '@/utils/constant';
 import { useAuth } from '@/app/context/useAuth';
+import { toast } from 'react-toastify';
 
 const CategoriesTable = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -167,6 +168,7 @@ const CategoriesTable = () => {
       const result = await response.json();
       // Handle success (e.g., notify the user, close the modal, etc.)
       console.log('Update successful:', result);
+      toast.success('item updated successfully!');
       setIsEditOpen(false); // Close the modal or take another action
       fetchData();
     } catch (error) {
@@ -214,7 +216,7 @@ const CategoriesTable = () => {
 
       const data = await response.json();
       console.log('Product added:', data);
-
+      toast.success('item added successfully!');
       setIsAddOpen(false); // Close the add dialog
       fetchData();
     } catch (error) {
@@ -250,6 +252,7 @@ const CategoriesTable = () => {
       const result = await response.json();
       // Handle success (e.g., notify the user, update the UI, etc.)
       console.log('Delete successful:', result);
+      toast.success('item deleted successfully!');
       fetchData();
       // Optionally refresh the data or update state to remove the deleted item
     } catch (error) {

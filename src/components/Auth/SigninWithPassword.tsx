@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/app/context/useAuth';
 import { baseUrl } from '@/utils/constant';
+import { toast } from 'react-toastify';
 
 export default function SigninWithPassword() {
   const { user, login } = useAuth();
@@ -40,8 +41,10 @@ export default function SigninWithPassword() {
       const result = await response.json();
       console.log(result);
       login(result);
+      toast.success('Login successful!'); // Success toast
     } catch (err) {
       console.log('error login');
+      toast.error('Login failed! Please check your credentials.'); // Error toast
     }
   };
 
