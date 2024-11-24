@@ -166,7 +166,6 @@ const OrderTable = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user?.token}`,
         },
         body: JSON.stringify(formDataWithArrays),
       });
@@ -304,7 +303,7 @@ const OrderTable = () => {
               type="text"
               id="user"
               name="user"
-              value={initialFormData.user} // Directly using the user ID from initialFormData
+              value={formData.user} // Directly using the user ID from initialFormData
               onChange={(e) =>
                 setFormData({ ...formData, user: e.target.value })
               }
@@ -323,7 +322,7 @@ const OrderTable = () => {
             <textarea
               id="cart"
               name="cart"
-              value={JSON.stringify(initialFormData.cart, null, 2)} // Displaying cart items as a string
+              value={JSON.stringify(formData.cart, null, 2)} // Displaying cart items as a string
               onChange={(e) =>
                 setFormData({ ...formData, cart: JSON.parse(e.target.value) })
               }
@@ -343,7 +342,7 @@ const OrderTable = () => {
               type="text"
               id="name"
               name="name"
-              value={initialFormData.name}
+              value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
@@ -364,7 +363,7 @@ const OrderTable = () => {
               type="text"
               id="address"
               name="address"
-              value={initialFormData.address}
+              value={formData.address}
               onChange={(e) =>
                 setFormData({ ...formData, address: e.target.value })
               }
@@ -385,7 +384,7 @@ const OrderTable = () => {
               type="email"
               id="email"
               name="email"
-              value={initialFormData.email}
+              value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
@@ -406,7 +405,7 @@ const OrderTable = () => {
               type="text"
               id="contact"
               name="contact"
-              value={initialFormData.contact}
+              value={formData.contact}
               onChange={(e) =>
                 setFormData({ ...formData, contact: e.target.value })
               }
@@ -426,7 +425,7 @@ const OrderTable = () => {
               type="text"
               id="city"
               name="city"
-              value={initialFormData.city}
+              value={formData.city}
               onChange={(e) =>
                 setFormData({ ...formData, city: e.target.value })
               }
@@ -446,7 +445,7 @@ const OrderTable = () => {
               type="text"
               id="country"
               name="country"
-              value={initialFormData.country}
+              value={formData.country}
               onChange={(e) =>
                 setFormData({ ...formData, country: e.target.value })
               }
@@ -466,7 +465,7 @@ const OrderTable = () => {
               type="text"
               id="zipCode"
               name="zipCode"
-              value={initialFormData.zipCode}
+              value={formData.zipCode}
               onChange={(e) =>
                 setFormData({ ...formData, zipCode: e.target.value })
               }
@@ -486,7 +485,7 @@ const OrderTable = () => {
               type="number"
               id="subTotal"
               name="subTotal"
-              value={initialFormData.subTotal}
+              value={formData.subTotal}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -510,7 +509,7 @@ const OrderTable = () => {
               type="number"
               id="shippingCost"
               name="shippingCost"
-              value={initialFormData.shippingCost}
+              value={formData.shippingCost}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -533,7 +532,7 @@ const OrderTable = () => {
               type="number"
               id="discount"
               name="discount"
-              value={initialFormData.discount}
+              value={formData.discount}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -556,7 +555,7 @@ const OrderTable = () => {
               type="number"
               id="totalAmount"
               name="totalAmount"
-              value={initialFormData.totalAmount}
+              value={formData.totalAmount}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -580,7 +579,7 @@ const OrderTable = () => {
               type="text"
               id="shippingOption"
               name="shippingOption"
-              value={initialFormData.shippingOption}
+              value={formData.shippingOption}
               onChange={(e) =>
                 setFormData({ ...formData, shippingOption: e.target.value })
               }
@@ -599,7 +598,7 @@ const OrderTable = () => {
             <select
               id="status"
               name="status"
-              value={initialFormData.status}
+              value={formData.status}
               onChange={(e) =>
                 setFormData({ ...formData, status: e.target.value })
               }
@@ -643,7 +642,7 @@ const OrderTable = () => {
               type="text"
               id="user"
               name="user"
-              value={initialFormData.user} // Directly using the user ID from initialFormData
+              value={formData.user} // Directly using the user ID from initialFormData
               onChange={(e) =>
                 setFormData({ ...formData, user: e.target.value })
               }
@@ -662,7 +661,7 @@ const OrderTable = () => {
             <textarea
               id="cart"
               name="cart"
-              value={JSON.stringify(initialFormData.cart, null, 2)} // Displaying cart items as a string
+              value={JSON.stringify(formData.cart, null, 2)} // Displaying cart items as a string
               onChange={(e) =>
                 setFormData({ ...formData, cart: JSON.parse(e.target.value) })
               }
@@ -682,7 +681,7 @@ const OrderTable = () => {
               type="text"
               id="name"
               name="name"
-              value={initialFormData.name}
+              value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
@@ -703,7 +702,7 @@ const OrderTable = () => {
               type="text"
               id="address"
               name="address"
-              value={initialFormData.address}
+              value={formData.address}
               onChange={(e) =>
                 setFormData({ ...formData, address: e.target.value })
               }
@@ -724,7 +723,7 @@ const OrderTable = () => {
               type="email"
               id="email"
               name="email"
-              value={initialFormData.email}
+              value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
@@ -745,7 +744,7 @@ const OrderTable = () => {
               type="text"
               id="contact"
               name="contact"
-              value={initialFormData.contact}
+              value={formData.contact}
               onChange={(e) =>
                 setFormData({ ...formData, contact: e.target.value })
               }
@@ -765,7 +764,7 @@ const OrderTable = () => {
               type="text"
               id="city"
               name="city"
-              value={initialFormData.city}
+              value={formData.city}
               onChange={(e) =>
                 setFormData({ ...formData, city: e.target.value })
               }
@@ -785,7 +784,7 @@ const OrderTable = () => {
               type="text"
               id="country"
               name="country"
-              value={initialFormData.country}
+              value={formData.country}
               onChange={(e) =>
                 setFormData({ ...formData, country: e.target.value })
               }
@@ -805,7 +804,7 @@ const OrderTable = () => {
               type="text"
               id="zipCode"
               name="zipCode"
-              value={initialFormData.zipCode}
+              value={formData.zipCode}
               onChange={(e) =>
                 setFormData({ ...formData, zipCode: e.target.value })
               }
@@ -825,7 +824,7 @@ const OrderTable = () => {
               type="number"
               id="subTotal"
               name="subTotal"
-              value={initialFormData.subTotal}
+              value={formData.subTotal}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -849,7 +848,7 @@ const OrderTable = () => {
               type="number"
               id="shippingCost"
               name="shippingCost"
-              value={initialFormData.shippingCost}
+              value={formData.shippingCost}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -872,7 +871,7 @@ const OrderTable = () => {
               type="number"
               id="discount"
               name="discount"
-              value={initialFormData.discount}
+              value={formData.discount}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -895,7 +894,7 @@ const OrderTable = () => {
               type="number"
               id="totalAmount"
               name="totalAmount"
-              value={initialFormData.totalAmount}
+              value={formData.totalAmount}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -919,7 +918,7 @@ const OrderTable = () => {
               type="text"
               id="shippingOption"
               name="shippingOption"
-              value={initialFormData.shippingOption}
+              value={formData.shippingOption}
               onChange={(e) =>
                 setFormData({ ...formData, shippingOption: e.target.value })
               }
@@ -938,7 +937,7 @@ const OrderTable = () => {
             <select
               id="status"
               name="status"
-              value={initialFormData.status}
+              value={formData.status}
               onChange={(e) =>
                 setFormData({ ...formData, status: e.target.value })
               }
